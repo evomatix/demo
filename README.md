@@ -8,9 +8,9 @@ Tasker provided structured framework for RPA
 
 Web Actions
 
-Open
-Click
-Type
+*Open
+*Click
+*Type
 Select
 CheckElement
 
