@@ -8,17 +8,20 @@ Tasker provided structured framework for RPA
 
 Web Actions
 
-*Open
-*Click
-*Type
-Select
-CheckElement
+- Open
+- Click
+- Type
+- Select
+- CheckElement
 
 
 Email
 
-CheckEmail (IMPA)
-DownloadAttachments
+- CheckEmail (IMPA)
+- DownloadAttachments
+
+Features
+- UI Object Pramterization 
 
 
 
