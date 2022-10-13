@@ -19,6 +19,8 @@ public class ExecutionHandler implements AutoCloseable {
 
     private Properties configs;
 
+    private Properties settings;
+
     public ExecutionHandler(){
         this.setup();
         reporter.initReporting();
@@ -32,9 +34,25 @@ public class ExecutionHandler implements AutoCloseable {
 
     public void setup(){
 
-        String configPath = Paths.get(Thread.currentThread().getContextClassLoader().getResource("").getPath(),"config.properties").toString();
-        configs = PropertiesLoader.loadProperties(configPath);
+        this.loadProps();
         this.driver = WebDriverManager.chromedriver().create();
+    }
+
+    private void loadProps(){
+
+        String resourcePath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String configPath = Paths.get(resourcePath,"config.properties").toString();
+        configs = PropertiesLoader.loadProperties(configPath);
+        String settingsPath = Paths.get(resourcePath,"settings.properties").toString();
+        settings = PropertiesLoader.loadProperties(settingsPath);
+    }
+
+    public Object getConfiguration(String config){
+        if(configs.contains(config)){
+            return configs.get(config);
+        }else{
+            throw  new RuntimeException("Config ["+config+"] is not found");
+        }
     }
 
 
@@ -121,9 +139,9 @@ public class ExecutionHandler implements AutoCloseable {
 
     private WebElement findElement(ObjectLocator element){
 
-        int retry = 10;
+        int retry = settings.contains("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
         int counter = retry;
-        long timeout = 1000;
+        long retryInterval = settings.contains("find.element.retry.interval") ? Integer.parseInt((String) settings.get("find.element.retry.interval") ):1000;;
         boolean elementNotPresent = true;
 
         do{
@@ -144,7 +162,7 @@ public class ExecutionHandler implements AutoCloseable {
                 return  webElement;
             }else{
                 try {
-                    driver.wait(timeout);
+                    driver.wait(retryInterval);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
