@@ -3,16 +3,21 @@ package com.evomatix.tasker.framework.engine;
 import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.framework.locator.ObjectLocator;
 import com.evomatix.tasker.framework.reporting.ReportHandler;
+import com.evomatix.tasker.framework.utils.PropertiesLoader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Properties;
 
 
 public class ExecutionHandler implements AutoCloseable {
+
+    private Properties configs;
 
     public ExecutionHandler(){
         this.setup();
@@ -27,6 +32,8 @@ public class ExecutionHandler implements AutoCloseable {
 
     public void setup(){
 
+        String configPath = Paths.get(Thread.currentThread().getContextClassLoader().getResource("").getPath(),"config.properties").toString();
+        configs = PropertiesLoader.loadProperties(configPath);
         this.driver = WebDriverManager.chromedriver().create();
     }
 
