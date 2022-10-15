@@ -70,6 +70,11 @@ public class ExecutionHandler implements AutoCloseable {
     public String getText(ObjectLocator locator){
             return this.findElement(locator).getText();
     }
+    
+    public String getText(ObjectLocator locator,Map<String,String> locatorParams){
+        locator.setParameters(locatorParams);
+        return this.findElement(locator).getText();
+}
 
 
     public boolean checkElementPresent(ObjectLocator locator){
