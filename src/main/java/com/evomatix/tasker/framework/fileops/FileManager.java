@@ -24,4 +24,9 @@ public class FileManager {
         }
 
     }
+
+
+    public ExcelManager getExcelManager(){
+        return new ExcelManager();
+    }
 }

@@ -39,7 +39,7 @@ public class ExecutionHandler implements AutoCloseable {
     public void setup(){
 
         this.loadProps();
-        this.driver = WebDriverManager.chromedriver().create();
+     //   this.driver = WebDriverManager.chromedriver().create();
     }
 
     private void loadProps(){
