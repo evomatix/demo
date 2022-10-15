@@ -8,7 +8,7 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 
-		Common.adventus_Login(handler, "admissionstesting01@example.com", "RcY7CilamR8n8S7#wk");
+		Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
 		Common.adventus_SearchStudent(handler, "79456");
 		String studentName = Common.adventus_GetStudentName(handler, "79456");
 		System.out.println(studentName);

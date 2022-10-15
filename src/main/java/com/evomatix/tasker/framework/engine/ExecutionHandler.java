@@ -47,9 +47,9 @@ public class ExecutionHandler implements AutoCloseable {
         settings = PropertiesLoader.loadProperties(settingsPath);
     }
 
-    public Object getConfiguration(String config){
+    public String getConfiguration(String config){
         if(configs.contains(config)){
-            return configs.get(config);
+            return (String) configs.get(config);
         }else{
             throw  new RuntimeException("Config ["+config+"] is not found");
         }
