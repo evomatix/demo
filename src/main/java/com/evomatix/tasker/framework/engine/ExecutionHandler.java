@@ -1,5 +1,6 @@
 package com.evomatix.tasker.framework.engine;
 
+import com.evomatix.tasker.framework.fileops.FileManager;
 import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.framework.locator.ObjectLocator;
 import com.evomatix.tasker.framework.reporting.ReportHandler;
@@ -21,7 +22,10 @@ public class ExecutionHandler implements AutoCloseable {
 
     private Properties settings;
 
+    public FileManager fileManager;
+
     public ExecutionHandler(){
+        fileManager = new FileManager();
         this.setup();
         reporter.initReporting();
     }
