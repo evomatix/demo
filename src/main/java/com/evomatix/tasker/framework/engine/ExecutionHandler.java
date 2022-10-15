@@ -1,21 +1,32 @@
 package com.evomatix.tasker.framework.engine;
 
-import com.evomatix.tasker.framework.model.logger.LogType;
+import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.framework.locator.ObjectLocator;
+import com.evomatix.tasker.framework.reporting.ReportHandler;
+import com.evomatix.tasker.framework.utils.PropertiesLoader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Properties;
 
 
 public class ExecutionHandler implements AutoCloseable {
 
+    private Properties configs;
+
+    private Properties settings;
+
     public ExecutionHandler(){
         this.setup();
+        reporter.initReporting();
     }
+
+    private ReportHandler reporter = new ReportHandler();
 
 
     private WebDriver driver;
@@ -23,18 +34,38 @@ public class ExecutionHandler implements AutoCloseable {
 
     public void setup(){
 
+        this.loadProps();
         this.driver = WebDriverManager.chromedriver().create();
+    }
+
+    private void loadProps(){
+
+        String resourcePath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String configPath = Paths.get(resourcePath,"config.properties").toString();
+        configs = PropertiesLoader.loadProperties(configPath);
+        String settingsPath = Paths.get(resourcePath,"settings.properties").toString();
+        settings = PropertiesLoader.loadProperties(settingsPath);
+    }
+
+    public Object getConfiguration(String config){
+        if(configs.contains(config)){
+            return configs.get(config);
+        }else{
+            throw  new RuntimeException("Config ["+config+"] is not found");
+        }
     }
 
 
   public void open(String url, long timeout){
         this.driver.navigate().to(url);
+        this.log(LogType.PASS,"Open",url);
         this.pause(timeout);
 
   }
 
     public void click(ObjectLocator locator){
             this.findElement(locator).click();
+            this.log(LogType.PASS,"Click","Clicked on Element ["+locator.name+"]");
     }
 
     public void click(ObjectLocator locator, Map<String,String> locatorParams){
@@ -46,10 +77,12 @@ public class ExecutionHandler implements AutoCloseable {
         WebElement webElement = this.findElement(locator);
         try{
             webElement.clear();
+
         }catch (Exception e){
             e.printStackTrace();
         }
         webElement.sendKeys(text);
+        this.log(LogType.PASS,"Type","Typed on Element ["+locator.name+"]");
     }
 
     public void type(ObjectLocator locator, Map<String,String> locatorParams,String text){
@@ -60,6 +93,7 @@ public class ExecutionHandler implements AutoCloseable {
     public void select(ObjectLocator locator,String value){
          Select select=  new Select(this.findElement(locator));
          select.selectByValue(value);
+         this.log(LogType.PASS,"Select","Selected Value ["+value+"] on Element ["+locator.name+"]");
     }
 
     public void select(ObjectLocator locator,Map<String,String> locatorParams,String value){
@@ -68,7 +102,11 @@ public class ExecutionHandler implements AutoCloseable {
     }
 
     public String getText(ObjectLocator locator){
-            return this.findElement(locator).getText();
+
+        String txt = this.findElement(locator).getText();
+      this.log(LogType.PASS,"GetText","Read value ["+txt+"] from Element ["+locator.name+"]");
+
+        return txt;
     }
     
     public String getText(ObjectLocator locator,Map<String,String> locatorParams){
@@ -80,8 +118,12 @@ public class ExecutionHandler implements AutoCloseable {
     public boolean checkElementPresent(ObjectLocator locator){
         try{
           this.findElement(locator);
+          this.log(LogType.PASS,"checkElementPresent","Element ["+locator.name+"] is present");
           return  true;
+
+
         }catch (Exception e){
+            this.log(LogType.PASS,"checkElementPresent","Element ["+locator.name+"] is not present");
             return false;
         }
     }
@@ -102,9 +144,9 @@ public class ExecutionHandler implements AutoCloseable {
 
     private WebElement findElement(ObjectLocator element){
 
-        int retry = 10;
+        int retry = settings.contains("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
         int counter = retry;
-        long timeout = 1000;
+        long retryInterval = settings.contains("find.element.retry.interval") ? Integer.parseInt((String) settings.get("find.element.retry.interval") ):1000;;
         boolean elementNotPresent = true;
 
         do{
@@ -125,7 +167,7 @@ public class ExecutionHandler implements AutoCloseable {
                 return  webElement;
             }else{
                 try {
-                    driver.wait(timeout);
+                    driver.wait(retryInterval);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -146,12 +188,12 @@ public class ExecutionHandler implements AutoCloseable {
     }
 
 
-    public void log(String message, LogType logType){
-        ExecutionHandler.log(message,logType,false);
+    public void log(LogType logType,String message,String details){
+        this.log(logType,message,details,false);
     }
 
-    public static void log(String message, LogType logType,boolean captureScreenshot){
-        System.out.println(message);
+    public void log(LogType logType,String message,String details ,boolean captureScreenshot){
+        reporter.log(logType,message,details);
 
     }
 
@@ -160,7 +202,7 @@ public class ExecutionHandler implements AutoCloseable {
     public void close() throws Exception {
 
 
-
+        reporter.endReporting();
         if(this.driver!=null){
             this.driver.close();
             this.driver.quit();
