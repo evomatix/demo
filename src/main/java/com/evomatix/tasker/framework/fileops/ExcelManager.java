@@ -36,7 +36,7 @@ public class ExcelManager {
     }
 
 
-    public List<Map<String,Object>> readExcel(String sheetName) throws IOException {
+    public List<Map<String,Object>> readExcel(String sheetName) {
 
         if(!open){
             throw new RuntimeException("No opened workbooks, Please open before reading");
