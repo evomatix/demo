@@ -52,7 +52,7 @@ public class ExecutionHandler implements AutoCloseable {
     }
 
     public String getConfiguration(String config){
-        if(configs.contains(config)){
+        if(configs.containsKey(config)){
             return (String) configs.get(config);
         }else{
             throw  new RuntimeException("Config ["+config+"] is not found");
