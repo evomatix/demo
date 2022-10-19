@@ -6,9 +6,8 @@ import com.evomatix.tasker.framework.locator.ObjectLocator;
 import com.evomatix.tasker.framework.reporting.ReportHandler;
 import com.evomatix.tasker.framework.utils.PropertiesLoader;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
 import java.nio.file.Paths;
@@ -71,7 +70,13 @@ public class ExecutionHandler implements AutoCloseable {
   }
 
     public void click(ObjectLocator locator){
-            this.findElement(locator).click();
+        WebElement element= this.findElement(locator);
+           try{
+               element.click();
+           }catch (JavascriptException e){
+               JavascriptExecutor executor = (JavascriptExecutor)driver;
+               executor.executeScript("arguments[0].click();", element);
+           }
             this.log(LogType.PASS,"Click","Clicked on Element ["+locator.name+"]");
     }
 
@@ -149,43 +154,50 @@ public class ExecutionHandler implements AutoCloseable {
         }
     }
 
-    private WebElement findElement(ObjectLocator element){
+    private WebElement findElement(ObjectLocator element)  {
 
         int retry = settings.contains("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
-        int counter = retry;
+        int counter = 1;
         long retryInterval = settings.contains("find.element.retry.interval") ? Integer.parseInt((String) settings.get("find.element.retry.interval") ):1000;;
         boolean elementNotPresent = true;
 
+        WebElement webElement;
+
         do{
 
-            WebElement webElement = driver.findElement(element.getResolvedLocator());
+            try {
 
+                webElement = driver.findElement(element.getResolvedLocator());
+                if (webElement != null) {
+                    //scroll the element to view
+                    try {
 
-            if(webElement!=null){
-                //scroll the element to view
-                try{
-                    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", webElement);
-                    //this make thing stable -> meantime slow
-                    Thread.sleep(500);
-                }catch (Exception e){
-                    e.printStackTrace();
+                        Actions actions = new Actions(driver);
+                        actions.moveToElement(webElement);
+                        actions.perform();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    return webElement;
+
+                }
+            }catch (NoSuchElementException e){
+
+                if(retry==counter){
+                    throw new RuntimeException("Unable to locate element after ["+retry+"] retrie(s)",e);
                 }
 
-                return  webElement;
-            }else{
+                System.out.println("Retry ["+counter+"]");
                 try {
-                    driver.wait(retryInterval);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.sleep(retryInterval);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
-            }
+                counter++;
 
-            if(counter>0){
-                counter--;
-            }else{
-                elementNotPresent=false;
             }
-
         }while (elementNotPresent);
 
         throw new RuntimeException("Element is not Found");
@@ -197,9 +209,11 @@ public class ExecutionHandler implements AutoCloseable {
 
     public void log(LogType logType,String message,String details){
         this.log(logType,message,details,false);
+
     }
 
     public void log(LogType logType,String message,String details ,boolean captureScreenshot){
+        System.out.println(logType.toString()+" - "+message+" - "+details);
         reporter.log(logType,message,details);
 
     }
