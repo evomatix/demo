@@ -3,7 +3,9 @@ package com.evomatix.tasker.rpa.scripting.bc;
 import java.util.Map;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.rpa.scripting.pages.AdventusDocuments;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusLogin;
+import com.evomatix.tasker.rpa.scripting.pages.AdventusShow;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusStudentStatus;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryApplication;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryLogin;
@@ -51,11 +53,28 @@ public class Common {
 
     }
     
-    public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname){
+    public static void adventus_RenameDownloadedFile(ExecutionHandler handler) {
+    	
+    }
+    
+    public static String adventus_StoreStudentID(ExecutionHandler handler) {
+    	String studentNum = "0";
+    	return studentNum;
+    }
+    
+    
+    public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname, String offerType){
         handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID",studentID,"idf_StudentName",studentname));
+        handler.click(AdventusStudentStatus.lnk_SearchApply);
+        handler.click(AdventusStudentStatus.lnk_Documents);
+        handler.click(AdventusDocuments.lnk_Documents);
+        handler.select(AdventusDocuments.dd_AddDocuments, offerType);
+        handler.click(AdventusDocuments.btn_Send);
+        handler.click(AdventusStudentStatus.lnk_StudentInformation);
+        handler.click(AdventusStudentStatus.lnk_ActivityOverview);
+        handler.type(AdventusShow.txt_MessageBox, "TEST");
+        handler.click(AdventusShow.btn_Send);
         handler.click(AdventusStudentStatus.lnk_Application);
-        
-
     }
     
     
