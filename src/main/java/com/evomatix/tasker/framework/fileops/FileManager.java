@@ -30,4 +30,8 @@ public class FileManager {
         return new ExcelManager();
     }
 
+    public PDFManager getPDFManager(){
+        return new PDFManager();
+    }
+
 }

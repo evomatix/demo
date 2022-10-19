@@ -62,7 +62,7 @@ public class Common {
 
     public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile){
 
-        SimplePDFReader reader = new SimplePDFReader();
+        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
         List<String> lines= reader.extractLineContent(pdfFile);
         String studentID=null;
         for (String line:lines) {
