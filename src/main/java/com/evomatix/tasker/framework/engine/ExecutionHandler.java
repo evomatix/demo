@@ -41,18 +41,20 @@ public class ExecutionHandler implements AutoCloseable {
     private void loadProps(){
 
         String resourcePath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        String configPath = Paths.get(resourcePath,"config.properties").toString();
+        String configPath = resourcePath+"config.properties";
+        configPath = configPath.substring(1,configPath.length());
         configs = PropertiesLoader.loadProperties(configPath);
-        String settingsPath = Paths.get(resourcePath,"settings.properties").toString();
+        String settingsPath = resourcePath+"settings.properties";
+        settingsPath = settingsPath.substring(1,settingsPath.length());
         settings = PropertiesLoader.loadProperties(settingsPath);
     }
 
     public String getConfiguration(String config){
-        if(configs.contains(config)){
-            return (String) configs.get(config);
-        }else{
-            throw  new RuntimeException("Config ["+config+"] is not found");
-        }
+    	 return (String) configs.get(config);
+			/*
+			 * if(configs.contains(config)){ return (String) configs.get(config); }else{
+			 * throw new RuntimeException("Config ["+config+"] is not found"); }
+			 */
     }
 
 

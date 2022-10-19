@@ -12,7 +12,7 @@ public class ProcessOne {
 		Common.adventus_SearchStudent(handler, "79456");
 		String studentName = Common.adventus_GetStudentName(handler, "79456");
 		System.out.println(studentName);
-		Common.coventry_Login(handler, "jayatakker@adventus.io", "Adventus@123");
+		Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"), handler.getConfiguration("COVENTRY_PASSWORD"));
 		//Common.coventry_DownloadTheOffer(handler, studentName);
 		
 
