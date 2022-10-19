@@ -6,6 +6,7 @@ import com.evomatix.tasker.framework.locator.ObjectLocator;
 import com.evomatix.tasker.framework.reporting.ReportHandler;
 import com.evomatix.tasker.framework.utils.PropertiesLoader;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -39,7 +40,7 @@ public class ExecutionHandler implements AutoCloseable {
     public void setup(){
 
         this.loadProps();
-     //   this.driver = WebDriverManager.chromedriver().create();
+        this.driver = WebDriverManager.chromedriver().create();
     }
 
     private void loadProps(){
@@ -71,7 +72,13 @@ public class ExecutionHandler implements AutoCloseable {
   }
 
     public void click(ObjectLocator locator){
-            this.findElement(locator).click();
+        WebElement element= this.findElement(locator);
+           try{
+               element.click();
+           }catch (JavascriptException e){
+               JavascriptExecutor executor = (JavascriptExecutor)driver;
+               executor.executeScript("arguments[0].click();", element);
+           }
             this.log(LogType.PASS,"Click","Clicked on Element ["+locator.name+"]");
     }
 
@@ -197,9 +204,11 @@ public class ExecutionHandler implements AutoCloseable {
 
     public void log(LogType logType,String message,String details){
         this.log(logType,message,details,false);
+
     }
 
     public void log(LogType logType,String message,String details ,boolean captureScreenshot){
+        System.out.println(logType.toString()+" - "+message+" - "+details);
         reporter.log(logType,message,details);
 
     }
