@@ -50,4 +50,13 @@ public class Common {
         handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID",studentID,"idf_StudentName",studentname));
 
     }
+    
+    public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname){
+        handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID",studentID,"idf_StudentName",studentname));
+        handler.click(AdventusStudentStatus.lnk_Application);
+        
+
+    }
+    
+    
 }
