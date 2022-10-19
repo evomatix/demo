@@ -23,7 +23,10 @@ public class ProcessOne {
 				String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
 				System.out.println(studentName);
 				Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"), handler.getConfiguration("COVENTRY_PASSWORD"));
-				Common.coventry_DownloadTheOffer(handler, studentName);
+				String pdfFile =Common.coventry_DownloadTheOffer(handler, studentName);
+				String pdfStudentID=Common.adventus_getStudentIDFromPDF(handler,pdfFile);
+				System.out.println(pdfStudentID);
+
 			}catch (Exception e){
 				e.printStackTrace();
 			}

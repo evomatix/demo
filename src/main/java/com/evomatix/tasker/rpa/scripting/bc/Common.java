@@ -1,13 +1,14 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
+import java.util.List;
 import java.util.Map;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.framework.fileops.SimplePDFReader;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusLogin;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusStudentStatus;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryApplication;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryLogin;
-import com.evomatix.tasker.rpa.scripting.pages.GoogleHome;
 
 public class Common {
 	
@@ -19,13 +20,12 @@ public class Common {
         handler.pause(15000);
     }
     
-    public static void coventry_DownloadTheOffer(ExecutionHandler handler, String studentID){
+    public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentID){
         handler.click(CoventryApplication.lnk_Application);
         handler.click(CoventryApplication.lnk_StudentName,Map.of("idf_StudentID",studentID));
         handler.click(CoventryApplication.btn_DownloadTheOffer);
-        handler.waitUntilDonwloadCompleted();
-
-
+        String file= handler.waitUntilDonwloadCompleted();
+        return  file;
     }
 
     public static void adventus_Login(ExecutionHandler handler, String email, String password){
@@ -57,6 +57,25 @@ public class Common {
         handler.click(AdventusStudentStatus.lnk_Application);
         
 
+    }
+
+
+    public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile){
+
+        SimplePDFReader reader = new SimplePDFReader();
+        List<String> lines= reader.extractLineContent(pdfFile);
+        String studentID=null;
+        for (String line:lines) {
+            if(line.contains("Student ID:")){
+                studentID=line.split(":")[1].trim();
+                break;
+            }
+        }
+
+        if(studentID==null){
+            handler.fail("Student id not Found in the downloaded PDF");
+        }
+        return studentID;
     }
     
     

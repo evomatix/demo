@@ -156,6 +156,10 @@ public class ExecutionHandler implements AutoCloseable {
         }
     }
 
+    public void fail(String  message){
+        throw new RuntimeException(message);
+    }
+
     private WebElement findElement(ObjectLocator element)  {
 
         int retry = settings.contains("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
@@ -263,7 +267,8 @@ public class ExecutionHandler implements AutoCloseable {
         // switch back to main window
         driver.switchTo().window(mainWindow);
 
-        donwloadedAt=donwloadedAt.split("")[1];
+        donwloadedAt=donwloadedAt.split("path=")[1];
+        donwloadedAt = donwloadedAt.split(".pdf")[0]+".pdf";;
         return donwloadedAt;
     }
 
