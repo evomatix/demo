@@ -10,6 +10,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
@@ -204,6 +206,65 @@ public class ExecutionHandler implements AutoCloseable {
 
 
 
+    }
+
+
+    public String waitUntilDonwloadCompleted()  {
+        // Store the current window handle
+        String mainWindow = driver.getWindowHandle();
+
+        // open a new tab
+        JavascriptExecutor js = (JavascriptExecutor)driver;
+        js.executeScript("window.open()");
+        // switch to new tab
+        // Switch to new window opened
+        for(String winHandle : driver.getWindowHandles()){
+            driver.switchTo().window(winHandle);
+        }
+        // navigate to chrome downloads
+        driver.get("chrome://downloads");
+
+        JavascriptExecutor js1 = (JavascriptExecutor)driver;
+        // wait until the file is downloaded
+        Long percentage = (long) 0;
+        while ( percentage!= 100) {
+            try {
+                percentage = (Long) js1.executeScript("return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#progress').value");
+                //System.out.println(percentage);
+            }catch (Exception e) {
+                // Nothing to do just wait
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // get the latest downloaded file name
+        String fileName = (String) js1.executeScript("return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
+        // get the latest downloaded file url
+        String sourceURL = (String) js1.executeScript("return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').href");
+        // file downloaded location
+        String donwloadedAt = (String) js1.executeScript("return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div.is-active.focus-row-active #file-icon-wrapper img').src");
+        System.out.println("Download deatils");
+        System.out.println("File Name :-" + fileName);
+        try {
+             donwloadedAt = java.net.URLDecoder.decode(donwloadedAt, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            // not going to happen - value came from JDK's own StandardCharsets
+        }
+        System.out.println("Donwloaded path :- " + donwloadedAt);
+        System.out.println("Downloaded from url :- " + sourceURL);
+        // print the details
+        System.out.println(fileName);
+        System.out.println(sourceURL);
+        // close the downloads tab2
+        driver.close();
+        // switch back to main window
+        driver.switchTo().window(mainWindow);
+
+        donwloadedAt=donwloadedAt.split("")[1];
+        return donwloadedAt;
     }
 
 
