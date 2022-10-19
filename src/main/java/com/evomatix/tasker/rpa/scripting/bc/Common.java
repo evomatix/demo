@@ -23,6 +23,7 @@ public class Common {
         handler.click(CoventryApplication.lnk_Application);
         handler.click(CoventryApplication.lnk_StudentName,Map.of("idf_StudentID",studentID));
         handler.click(CoventryApplication.btn_DownloadTheOffer);
+        handler.waitUntilDonwloadCompleted();
 
 
     }
