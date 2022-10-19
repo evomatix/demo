@@ -1,5 +1,6 @@
 package com.evomatix.tasker.framework.engine;
 
+import com.evomatix.tasker.framework.fileops.FileManager;
 import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.framework.locator.ObjectLocator;
 import com.evomatix.tasker.framework.reporting.ReportHandler;
@@ -21,7 +22,10 @@ public class ExecutionHandler implements AutoCloseable {
 
     private Properties settings;
 
+    public FileManager fileManager;
+
     public ExecutionHandler(){
+        fileManager = new FileManager();
         this.setup();
         reporter.initReporting();
     }
@@ -35,7 +39,7 @@ public class ExecutionHandler implements AutoCloseable {
     public void setup(){
 
         this.loadProps();
-        this.driver = WebDriverManager.chromedriver().create();
+     //   this.driver = WebDriverManager.chromedriver().create();
     }
 
     private void loadProps(){
@@ -50,11 +54,12 @@ public class ExecutionHandler implements AutoCloseable {
     }
 
     public String getConfiguration(String config){
-    	 return (String) configs.get(config);
-			/*
-			 * if(configs.contains(config)){ return (String) configs.get(config); }else{
-			 * throw new RuntimeException("Config ["+config+"] is not found"); }
-			 */
+
+        if(configs.containsKey(config)){
+            return (String) configs.get(config);
+        }else{
+            throw  new RuntimeException("Config ["+config+"] is not found");
+        }
     }
 
 
