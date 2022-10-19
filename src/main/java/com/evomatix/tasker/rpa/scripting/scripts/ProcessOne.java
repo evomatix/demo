@@ -11,13 +11,19 @@ public class ProcessOne {
 
 	public static void partOne(ExecutionHandler handler) {
 
+		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
+		excelDataSource.openWorkBook("C:\\Personnel\\Adventus\\Project\\tasker\\src\\main\\resources\\Portal Check - RPA Pilot.xlsx");
+		List<Map<String, Object>> data = excelDataSource.readExcel("Lodgements");
 
-		Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
-		Common.adventus_SearchStudent(handler, "79456");
-		String studentName = Common.adventus_GetStudentName(handler, "79456");
-		System.out.println(studentName);
-		Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"), handler.getConfiguration("COVENTRY_PASSWORD"));
-		//Common.coventry_DownloadTheOffer(handler, studentName);
+		for (Map<String, Object> row:data) {
+
+			Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
+			Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
+			String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
+			System.out.println(studentName);
+			Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"), handler.getConfiguration("COVENTRY_PASSWORD"));
+			//Common.coventry_DownloadTheOffer(handler, studentName);
+		}
 		
 
 	}
@@ -44,9 +50,9 @@ public class ProcessOne {
 			Common.coventry_DownloadTheOffer(handler, studentName);
 		}
 
-		//rename file
+			//rename file
 
-		handler.fileManager.renameFile("c:/download/downloaded_pdf.pdf","new_name.pdf");
+			handler.fileManager.renameFile("c:/download/downloaded_pdf.pdf","new_name.pdf");
 
 
 
