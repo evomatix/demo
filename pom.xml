@@ -43,6 +43,44 @@
            <artifactId>poi-ooxml</artifactId>
            <version>5.2.0</version>
        </dependency>
+
+       <dependency>
+           <groupId>org.apache.pdfbox</groupId>
+           <artifactId>pdfbox</artifactId>
+           <version>2.0.3</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>commons-logging</groupId>
+                   <artifactId>commons-logging</artifactId>
+               </exclusion>
+           </exclusions>
+       </dependency>
+       <dependency>
+           <groupId>org.json</groupId>
+           <artifactId>json</artifactId>
+           <version>20160810</version>
+       </dependency>
+       <dependency>
+           <groupId>com.googlecode.json-simple</groupId>
+           <artifactId>json-simple</artifactId>
+           <version>1.1</version>
+       </dependency>
+       <dependency>
+           <groupId>technology.tabula</groupId>
+           <artifactId>tabula</artifactId>
+           <version>1.0.1</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>org.apache.pdfbox</groupId>
+                   <artifactId>pdfbox</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>org.slf4j</groupId>
+                   <artifactId>slf4j-simple</artifactId>
+               </exclusion>
+           </exclusions>
+       </dependency>
+
    </dependencies>
 
     <build>
@@ -69,6 +107,14 @@
                     </configuration>
                 </execution>
             </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>9</source>
+                <target>9</target>
+            </configuration>
         </plugin>
     </plugins>
     </build>

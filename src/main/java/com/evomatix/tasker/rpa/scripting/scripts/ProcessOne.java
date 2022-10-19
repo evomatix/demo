@@ -12,7 +12,7 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook("C:\\Personnel\\Adventus\\Project\\tasker\\src\\main\\resources\\Portal Check - RPA Pilot.xlsx");
+		excelDataSource.openWorkBook("/Users/vdhhewapathirana/Storage/Projects/evomatix/tasker/src/main/resources/Portal Check - RPA Pilot.xlsx");
 		List<Map<String, Object>> data = excelDataSource.readExcel("Lodgements");
 
 		for (Map<String, Object> row:data) {
