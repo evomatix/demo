@@ -2,17 +2,17 @@ package com.evomatix.tasker.framework.fileops;
 
 
 
+import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.pdfbox.text.PDFTextStripperByArea;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -30,34 +30,70 @@ public class SimplePDFReader {
     private String filePath;
 
     /** The page number. */
-    private String pageNumber;
+    private int pageNumber;
 
     /** The filter coordinates. */
     //private String filterCoordinates;
 
-    /**
-     * Instantiates a new read pdf.
-     *
-     * @param filePath the file path
-     * @param pageNumber the page number
 
-     */
-    public SimplePDFReader(String filePath, String pageNumber) {
-        this.filePath = filePath;
-        this.pageNumber = pageNumber;
+
+
+    public List<String> extractLineContent(String filePath) {
+
+        // split by whitespace
+        String lines[] = this.readPDF(filePath).split("\\r?\\n");
+
+        for (String line : lines) {
+            System.out.println(line);
+        }
+
+        return Arrays.asList(lines);
+
+
+
+
+    }
+
+
+    public String readPDF(String filePath) {
+
+        try (PDDocument document = PDDocument.load(new File(filePath))) {
+
+            document.getClass();
+
+            if (!document.isEncrypted()) {
+
+                PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+                stripper.setSortByPosition(true);
+
+                PDFTextStripper tStripper = new PDFTextStripper();
+
+                String pdfFileInText = tStripper.getText(document);
+
+                return pdfFileInText;
+
+            }else{
+                throw new RuntimeException("Unable to read PDF file, File is password protected");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to read PDF file",e);
+        }
+
     }
 
 
     /**
      * Prints the fields.
      *
-     * @param pdfDocument the pdf document
+
      * @return the map
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public Map<String, String> printFields(final PDDocument pdfDocument) throws IOException {
+    public Map<String, String> printFields(String filePath) throws IOException {
+        PDDocument document = PDDocument.load(new File(filePath));
         Map<String, String> contentMap = new HashMap<String, String>();
-        PDDocumentCatalog docCatalog = pdfDocument.getDocumentCatalog();
+        PDDocumentCatalog docCatalog = document.getDocumentCatalog();
         PDAcroForm acroForm = docCatalog.getAcroForm();
         List<PDField> fields = acroForm.getFields();
         logger.info(fields.size() + " top-level fields were found on the form");
@@ -138,41 +174,5 @@ public class SimplePDFReader {
         }
     }
 
-    /**
-     * Gets the file path.
-     *
-     * @return the file path
-     */
-    public String getFilePath() {
-        return filePath;
-    }
-
-    /**
-     * Sets the file path.
-     *
-     * @param filePath the new file path
-     */
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    /**
-     * Gets the page number.
-     *
-     * @return the page number
-     */
-    public String getPageNumber() {
-        return pageNumber;
-    }
-
-    /**
-     * Sets the page number.
-     *
-     * @param pageNumber
-     *            the new page number
-     */
-    public void setPageNumber(String pageNumber) {
-        this.pageNumber = pageNumber;
-    }
 
 }
