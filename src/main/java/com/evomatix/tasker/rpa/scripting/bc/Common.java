@@ -83,7 +83,7 @@ public class Common {
 
 //        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
 //        List<String> lines= reader.extractLineContent(pdfFile);
-        String studentID=null;
+    	  String studentID=null;
 //        for (String line:lines) {
 //            if(line.contains("Student ID:")){
 //                studentID=line.split(":")[1].trim();

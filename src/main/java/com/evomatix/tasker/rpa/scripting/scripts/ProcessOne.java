@@ -24,6 +24,7 @@ public class ProcessOne {
 			Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"), handler.getConfiguration("COVENTRY_PASSWORD"));
 			Common.coventry_DownloadTheOffer(handler, studentName);
 			Common.adventus_RenameDownloadedFile(handler);
+			Common.adventus_StoreStudentID(handler);
 			Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
 			Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName, handler.getConfiguration("ADVENTUS_OFFERTYPE"));
 		
