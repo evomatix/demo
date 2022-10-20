@@ -12,14 +12,10 @@ public class AdventusApplication extends Page {
     }
 
     public static ObjectLocator btn_Edit = new ObjectLocator("btn_Edit","//button[text()='Edit']", LocatorType.XPATH);
-    public static ObjectLocator lnk_StudentName = new ObjectLocator("lnk_StudentName","//tr/td/span[contains(text(),'#{{idf_StudentID}}#')]/following::a[contains(text(),'#{{idf_StudentName}}#')]", LocatorType.XPATH);
-    public static ObjectLocator txt_Search = new ObjectLocator("txt_Search","//span[contains(text(),'Search')]/following-sibling::input[@type='search']", LocatorType.XPATH);
-    public static ObjectLocator lnk_StudentNameByID = new ObjectLocator("lnk_StudentNameByID","//a[@href='/counsellor/student/#{{idf_StudentID}}#/show']", LocatorType.XPATH);
-    public static ObjectLocator lnk_Application = new ObjectLocator("lnk_Application","//a/span[text()='Applications']", LocatorType.XPATH);
+    public static ObjectLocator btn_EditInstitutionStudentId = new ObjectLocator("btn_EditInstitutionStudentId","//div[contains(text(),'Institution Student Id')]/following::i[1]", LocatorType.XPATH);
+    public static ObjectLocator txt_InstitutionStudentId = new ObjectLocator("txt_InstitutionStudentId","//div[contains(text(),'Institution Student Id')]/following::input[1]", LocatorType.XPATH);
 
-    
-    
-
+  
 }
 
 
