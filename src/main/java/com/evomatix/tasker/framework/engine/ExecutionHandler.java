@@ -45,6 +45,7 @@ public class ExecutionHandler implements AutoCloseable {
 
         this.loadProps();
         this.driver = WebDriverManager.chromedriver().create();
+
     }
 
     private void loadProps(){
@@ -286,6 +287,11 @@ public class ExecutionHandler implements AutoCloseable {
         System.out.println(logType.toString()+" - "+message+" - "+details);
         reporter.log(logType,message,details);
 
+    }
+
+    public void scrollToBottom(){
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
     }
 
   public void handleFileUpload(ObjectLocator locator,String uploadFilePath){
