@@ -70,11 +70,16 @@ public class Common {
 		handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
 		handler.click(AdventusStudentStatus.lnk_SearchApply);
 		handler.click(AdventusStudentStatus.lnk_Documents);
-		//handler.click(AdventusDocuments.lnk_Documents);
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		};
+		handler.click(AdventusDocuments.lnk_Documents);
 		//handler.select(AdventusDocuments.dd_AddDocuments, offerType);
 		//handler.click(AdventusDocuments.btn_Add);
 		//handler.click(AdventusDocuments.btn_Upload);
-		//handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
+		handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
 	}
 
 	public static void adventus_SendMessage(ExecutionHandler handler, String offerType, String courceName) {
