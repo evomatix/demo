@@ -12,7 +12,6 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook("C:\\Personnel\\Adventus\\Project\\tasker\\src\\main\\resources\\Portal Check - RPA Pilot.xlsx");
 		excelDataSource.openWorkBook(handler.fileManager.getFileFromResource("Portal Check - RPA Pilot.xlsx"));
 		List<Map<String, Object>> data = excelDataSource.readExcel("Lodgements");
 
@@ -29,9 +28,9 @@ public class ProcessOne {
 				String pdfStudentID = Common.adventus_getStudentIDFromPDF(handler, pdfFile);
 				System.out.println(pdfStudentID);
 				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
-				Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
+				Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,handler.getConfiguration("ADVENTUS_OFFERTYPE"), pdfFile);
 				Common.adventus_SendMessage(handler, "Offer Type", "Cource Name");
-				
+				Common.adventus_EditApplication(handler, pdfStudentID);
 				Common.adventus_Logout(handler);
 
 			} catch (Exception e) {

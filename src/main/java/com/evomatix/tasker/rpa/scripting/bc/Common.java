@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.rpa.scripting.pages.AdventusApplication;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusDocuments;
 import com.evomatix.tasker.framework.fileops.SimplePDFReader;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusLogin;
@@ -65,14 +66,15 @@ public class Common {
 
 	}
 
-	public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname,String offerType) {
+	public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname,String offerType, String filePath) {
 		handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
 		handler.click(AdventusStudentStatus.lnk_SearchApply);
 		handler.click(AdventusStudentStatus.lnk_Documents);
 		//handler.click(AdventusDocuments.lnk_Documents);
 		//handler.select(AdventusDocuments.dd_AddDocuments, offerType);
-		handler.click(AdventusDocuments.btn_Add);
-		handler.click(AdventusDocuments.btn_Upload);
+		//handler.click(AdventusDocuments.btn_Add);
+		//handler.click(AdventusDocuments.btn_Upload);
+		//handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
 	}
 
 	public static void adventus_SendMessage(ExecutionHandler handler, String offerType, String courceName) {
@@ -82,11 +84,12 @@ public class Common {
 		handler.click(AdventusShow.btn_Send);
 	}
 	
-	public static void adventus_EditApplication(ExecutionHandler handler, String offerType, String courceName) {
-		handler.click(AdventusStudentStatus.lnk_StudentInformation);
-		handler.click(AdventusStudentStatus.lnk_ActivityOverview);
-		handler.type(AdventusShow.txt_MessageBox, "Dear Partner, Please be informed that we have received a "+ offerType + " from Coventry University for " + courceName+ " and the same has been attached under offer & confirmation documents. We would request you to fulfil all the conditions as mentioned in the offer letter and pay the initial deposit as per the requirement from the university. Some universities require the deposit before the university credibility interview and some require deposit only after clearing the credibility interview. Therefore if there are conditions to successfully pass the credibility interview then we would advise you not to pay a deposit till the credibility interview is cleared. It is a mandate that the student should undergo a mock interview with us before going for a university credibility interview. Thank you");
-		handler.click(AdventusShow.btn_Send);
+	public static void adventus_EditApplication(ExecutionHandler handler, String studentID) {
+		handler.click(AdventusStudentStatus.lnk_Application);
+		handler.click(AdventusApplication.btn_Edit);
+		handler.click(AdventusApplication.btn_EditInstitutionStudentId);
+		handler.type(AdventusApplication.txt_InstitutionStudentId, studentID);
+		handler.click(AdventusApplication.btn_EditInstitutionStudentId);
 	}
 
 	public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile) {
