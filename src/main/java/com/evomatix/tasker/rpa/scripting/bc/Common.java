@@ -70,15 +70,19 @@ public class Common {
 		handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
 		handler.click(AdventusStudentStatus.lnk_SearchApply);
 		handler.click(AdventusStudentStatus.lnk_Documents);
-		try {
-			Thread.sleep(30000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		};
+		handler.pause(5000);
+		handler.scrollToBottom();
+		handler.pause(5000);
+		handler.checkElementPresent(AdventusDocuments.lnk_Documents);
 		handler.click(AdventusDocuments.lnk_Documents);
-		//handler.select(AdventusDocuments.dd_AddDocuments, offerType);
-		//handler.click(AdventusDocuments.btn_Add);
-		//handler.click(AdventusDocuments.btn_Upload);
+		handler.pause(5000);
+		handler.scrollToBottom();
+		handler.pause(5000);
+		handler.checkElementPresent(AdventusDocuments.dd_AddDocuments);
+		handler.click(AdventusDocuments.dd_AddDocuments);
+		handler.click(AdventusDocuments.dd_AddDocumentsValue, Map.of("idf_Value", offerType));
+		handler.click(AdventusDocuments.btn_Add);
+		handler.click(AdventusDocuments.btn_Upload);
 		handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
 	}
 
