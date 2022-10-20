@@ -49,14 +49,8 @@ public class ExecutionHandler implements AutoCloseable {
     }
 
     private void loadProps(){
-
-        String resourcePath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        String configPath = resourcePath+"config.properties";
-        configPath = configPath.substring(1,configPath.length());
-        configs = PropertiesLoader.loadProperties(configPath);
-        String settingsPath = resourcePath+"settings.properties";
-        settingsPath = settingsPath.substring(1,settingsPath.length());
-        settings = PropertiesLoader.loadProperties(settingsPath);
+        configs = PropertiesLoader.loadProperties(this.fileManager.getFileFromResource("config.properties"));
+        settings = PropertiesLoader.loadProperties(this.fileManager.getFileFromResource("settings.properties"));
     }
 
     public String getConfiguration(String config){
