@@ -17,6 +17,10 @@ public class AdventusLogin extends Page {
 
     public static ObjectLocator btn_Login = new ObjectLocator("btn_Login","//button[contains(text(),'Log in')]", LocatorType.XPATH);
 
+    public static ObjectLocator btn_AccountCircle = new ObjectLocator("btn_AccountCircle","//div/i[text()='account_circle']", LocatorType.XPATH);
+
+    public static ObjectLocator btn_Logout = new ObjectLocator("btn_Logout","//button[text()='Log out']", LocatorType.XPATH);
+  
 
 }
 

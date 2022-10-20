@@ -13,90 +13,106 @@ import com.evomatix.tasker.rpa.scripting.pages.CoventryApplication;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryLogin;
 
 public class Common {
+
+	public static void coventry_Login(ExecutionHandler handler, String userName, String password) {
+		handler.open(new CoventryLogin().getUrl(), 3000);
+		handler.type(CoventryLogin.txt_UserName, userName);
+		handler.type(CoventryLogin.txt_Password, password);
+		handler.click(CoventryLogin.btn_Login);
+		handler.pause(15000);
+	}
+
+	public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentID) {
+		handler.click(CoventryApplication.lnk_Application);
+		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentID", studentID));
+		handler.click(CoventryApplication.btn_DownloadTheOffer);
+		String file = handler.waitUntilDonwloadCompleted();
+		return file;
+	}
+
+	public static void adventus_Login(ExecutionHandler handler, String email, String password) {
+		handler.open(new AdventusLogin().getUrl(), 3000);
+		handler.type(AdventusLogin.txt_Email, email);
+		handler.type(AdventusLogin.txt_Password, password);
+		handler.click(AdventusLogin.btn_Login);
+	}
+
+	public static void adventus_Logout(ExecutionHandler handler) {
+		handler.click(AdventusLogin.btn_AccountCircle);
+		handler.click(AdventusLogin.btn_Logout);
+
+	}
+
+	public static void adventus_SearchStudent(ExecutionHandler handler, String searchText) {
+		handler.type(AdventusStudentStatus.txt_Search, searchText);
+		handler.pause(5000);
+	}
+
+	public static String adventus_GetStudentName(ExecutionHandler handler, String studentID) {
+		String studentName = handler.getText(AdventusStudentStatus.lnk_StudentNameByID,
+				Map.of("idf_StudentID", studentID));
+		return studentName;
+	}
+
+	public static void adventus_ClickOnAppStage(ExecutionHandler handler, String appStage, String studentID,
+			String studentname) {
+		handler.click(AdventusStudentStatus.lnk_AppStages, Map.of("idf_AppStage", appStage));
+		handler.pause(5000);
+		handler.click(AdventusStudentStatus.lnk_StudentName,
+				Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
+
+	}
+
+	public static void adventus_RenameDownloadedFile(ExecutionHandler handler) {
+
+	}
+
+	public static String adventus_StoreStudentID(ExecutionHandler handler) {
+		String studentNum = "0";
+		return studentNum;
+	}
+
+	public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname,String offerType) {
+		handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
+		handler.click(AdventusStudentStatus.lnk_SearchApply);
+		handler.click(AdventusStudentStatus.lnk_Documents);
+		//handler.click(AdventusDocuments.lnk_Documents);
+		//handler.select(AdventusDocuments.dd_AddDocuments, offerType);
+		handler.click(AdventusDocuments.btn_Add);
+		handler.click(AdventusDocuments.btn_Upload);
+	}
+
+	public static void adventus_SendMessage(ExecutionHandler handler, String offerType, String courceName) {
+		handler.click(AdventusStudentStatus.lnk_StudentInformation);
+		handler.click(AdventusStudentStatus.lnk_ActivityOverview);
+		handler.type(AdventusShow.txt_MessageBox, "Dear Partner, Please be informed that we have received a "+ offerType + " from Coventry University for " + courceName+ " and the same has been attached under offer & confirmation documents. We would request you to fulfil all the conditions as mentioned in the offer letter and pay the initial deposit as per the requirement from the university. Some universities require the deposit before the university credibility interview and some require deposit only after clearing the credibility interview. Therefore if there are conditions to successfully pass the credibility interview then we would advise you not to pay a deposit till the credibility interview is cleared. It is a mandate that the student should undergo a mock interview with us before going for a university credibility interview. Thank you");
+		handler.click(AdventusShow.btn_Send);
+	}
 	
-    public static void coventry_Login(ExecutionHandler handler, String userName, String password){
-        handler.open(new CoventryLogin().getUrl(),3000);
-        handler.type(CoventryLogin.txt_UserName, userName);
-        handler.type(CoventryLogin.txt_Password, password);
-        handler.click(CoventryLogin.btn_Login);
-        handler.pause(15000);
-    }
-    
-    public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentID){
-        handler.click(CoventryApplication.lnk_Application);
-        handler.click(CoventryApplication.lnk_StudentName,Map.of("idf_StudentID",studentID));
-        handler.click(CoventryApplication.btn_DownloadTheOffer);
-        String file= handler.waitUntilDonwloadCompleted();
-        return  file;
-    }
+	public static void adventus_EditApplication(ExecutionHandler handler, String offerType, String courceName) {
+		handler.click(AdventusStudentStatus.lnk_StudentInformation);
+		handler.click(AdventusStudentStatus.lnk_ActivityOverview);
+		handler.type(AdventusShow.txt_MessageBox, "Dear Partner, Please be informed that we have received a "+ offerType + " from Coventry University for " + courceName+ " and the same has been attached under offer & confirmation documents. We would request you to fulfil all the conditions as mentioned in the offer letter and pay the initial deposit as per the requirement from the university. Some universities require the deposit before the university credibility interview and some require deposit only after clearing the credibility interview. Therefore if there are conditions to successfully pass the credibility interview then we would advise you not to pay a deposit till the credibility interview is cleared. It is a mandate that the student should undergo a mock interview with us before going for a university credibility interview. Thank you");
+		handler.click(AdventusShow.btn_Send);
+	}
 
-    public static void adventus_Login(ExecutionHandler handler, String email, String password){
-        handler.open(new AdventusLogin().getUrl(),3000);
-        handler.type(AdventusLogin.txt_Email, email);
-        handler.type(AdventusLogin.txt_Password, password);
-        handler.click(AdventusLogin.btn_Login);
-    }
-    
-    public static void adventus_SearchStudent(ExecutionHandler handler, String searchText){
-        handler.type(AdventusStudentStatus.txt_Search, searchText);
-        handler.pause(5000);
-    }
-    
-    public static String adventus_GetStudentName(ExecutionHandler handler, String studentID){
-        String studentName = handler.getText(AdventusStudentStatus.lnk_StudentNameByID, Map.of("idf_StudentID",studentID));
-        return studentName;
-    }
-    
-    public static void adventus_ClickOnAppStage(ExecutionHandler handler, String appStage, String studentID, String studentname){
-        handler.click(AdventusStudentStatus.lnk_AppStages,Map.of("idf_AppStage",appStage));
-        handler.pause(5000);
-        handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID",studentID,"idf_StudentName",studentname));
+	public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile) {
 
-    }
-    
-    public static void adventus_RenameDownloadedFile(ExecutionHandler handler) {
-    	
-    }
-    
-    public static String adventus_StoreStudentID(ExecutionHandler handler) {
-    	String studentNum = "0";
-    	return studentNum;
-    }
-    
-    
-    public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname, String offerType){
-        handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID",studentID,"idf_StudentName",studentname));
-        handler.click(AdventusStudentStatus.lnk_SearchApply);
-        handler.click(AdventusStudentStatus.lnk_Documents);
-        handler.click(AdventusDocuments.lnk_Documents);
-        handler.select(AdventusDocuments.dd_AddDocuments, offerType);
-        handler.click(AdventusDocuments.btn_Send);
-        handler.click(AdventusStudentStatus.lnk_StudentInformation);
-        handler.click(AdventusStudentStatus.lnk_ActivityOverview);
-        handler.type(AdventusShow.txt_MessageBox, "TEST");
-        handler.click(AdventusShow.btn_Send);
-        handler.click(AdventusStudentStatus.lnk_Application);
-    }
+		SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
+		List<String> lines = reader.extractLineContent(pdfFile);
+		String studentID = null;
+		for (String line : lines) {
+			if (line.contains("Student ID:")) {
+				studentID = line.split(":")[1].trim();
+				break;
+			}
+		}
 
+		if (studentID == null) {
+			handler.fail("Student id not Found in the downloaded PDF");
+		}
 
-    public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile){
+		return studentID;
+	}
 
-        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
-        List<String> lines= reader.extractLineContent(pdfFile);
-    	  String studentID=null;
-        for (String line:lines) {
-           if(line.contains("Student ID:")){
-                studentID=line.split(":")[1].trim();
-                break;
-            }
-        }
-
-        if(studentID==null){
-            handler.fail("Student id not Found in the downloaded PDF");
-        }
-    		
-    		return studentID;
-    	}
-    
-    
 }

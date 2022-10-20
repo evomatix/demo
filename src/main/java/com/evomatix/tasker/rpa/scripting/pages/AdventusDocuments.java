@@ -11,13 +11,12 @@ public class AdventusDocuments extends Page {
         this.setUrl("https://app.adventus.io");
     }
 
-    public static ObjectLocator lnk_Documents = new ObjectLocator("lnk_Documents","//div/h6[contains(text(),'Documents')]", LocatorType.XPATH);
-    public static ObjectLocator btn_Send = new ObjectLocator("btn_Send","//button/span[text()='Send']", LocatorType.XPATH);
-    public static ObjectLocator dd_AddDocuments = new ObjectLocator("dd_AddDocuments","(//div/h6[contains(text(),'Documents')]/following::button/i[text()='arrow_drop_down'])[2]", LocatorType.XPATH);
+    public static ObjectLocator lnk_Documents = new ObjectLocator("lnk_Documents","(//div[@class='accordion'])[14]/div/h6", LocatorType.XPATH);
+    public static ObjectLocator btn_Add = new ObjectLocator("btn_Add","(//button/span[text()='Add'])[8]", LocatorType.XPATH);
+    public static ObjectLocator dd_AddDocuments = new ObjectLocator("dd_AddDocuments","(//ul[@class='inline-dropdown__items'])[10]", LocatorType.XPATH);
+    public static ObjectLocator btn_Upload = new ObjectLocator("btn_Add","(//button/i[@class='material-icons adv-icon adv-icon--regular adv-icon--spacing-none pointer action-icon' and text()='upload'])[last()]", LocatorType.XPATH);
 
     
-    
-
 }
 
 
