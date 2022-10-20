@@ -1,5 +1,7 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -63,15 +65,6 @@ public class Common {
 
 	}
 
-	public static void adventus_RenameDownloadedFile(ExecutionHandler handler) {
-
-	}
-
-	public static String adventus_StoreStudentID(ExecutionHandler handler) {
-		String studentNum = "0";
-		return studentNum;
-	}
-
 	public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname,String offerType) {
 		handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
 		handler.click(AdventusStudentStatus.lnk_SearchApply);
@@ -107,12 +100,25 @@ public class Common {
 				break;
 			}
 		}
-
 		if (studentID == null) {
 			handler.fail("Student id not Found in the downloaded PDF");
 		}
 
 		return studentID;
-	}
+    }
+    
+    public static String adventus_RenameDownloadedFile(ExecutionHandler handler, String filePath, String prefix) {
+
+        File file = new File(filePath);
+        File updatedFile = new File(file.getParentFile().getAbsolutePath()+File.separator+prefix+"_"+file.getName());
+        boolean success = file.renameTo(updatedFile);
+        if (!success) {
+            throw new RuntimeException("FAILED to rename "+file.getName());
+        } else {
+            System.out.println(updatedFile.getAbsolutePath());
+           return updatedFile.getAbsolutePath();
+        }
+    }
+
 
 }

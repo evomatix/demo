@@ -10,11 +10,15 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 
 public class ExecutionHandler implements AutoCloseable {
@@ -162,9 +166,9 @@ public class ExecutionHandler implements AutoCloseable {
 
     private WebElement findElement(ObjectLocator element)  {
 
-        int retry = settings.contains("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
+        int retry = settings.containsKey("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
         int counter = 1;
-        long retryInterval = settings.contains("find.element.retry.interval") ? Integer.parseInt((String) settings.get("find.element.retry.interval") ):1000;;
+        long retryInterval = settings.containsKey("find.element.retry.interval") ? Integer.parseInt((String) settings.get("find.element.retry.interval") ):1000;;
         boolean elementNotPresent = true;
 
         WebElement webElement;
@@ -283,6 +287,40 @@ public class ExecutionHandler implements AutoCloseable {
         reporter.log(logType,message,details);
 
     }
+
+  public void handleFileUpload(ObjectLocator locator,String uploadFilePath){
+      try{
+
+          WebElement element = this.findElement(locator);
+          if(element.getTagName().equalsIgnoreCase("INPUT")){
+              element.sendKeys(uploadFilePath);
+              driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+          }else{
+              element.click();
+              Thread.sleep(2000);
+
+              StringSelection stringSelection= new StringSelection(uploadFilePath);
+
+             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+
+              Robot robot = new Robot();
+
+              robot.keyPress(KeyEvent.VK_META);
+              robot.keyPress(KeyEvent.VK_V);
+              robot.keyRelease(KeyEvent.VK_META);
+              robot.keyRelease(KeyEvent.VK_V);
+              robot.keyPress(KeyEvent.VK_ENTER);
+              robot.keyRelease(KeyEvent.VK_ENTER);
+              robot.delay(500);
+
+          }
+
+      }catch (Exception e){
+          e.printStackTrace();
+      }
+
+
+  }
 
 
     @Override
