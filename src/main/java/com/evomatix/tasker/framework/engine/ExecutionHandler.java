@@ -162,9 +162,9 @@ public class ExecutionHandler implements AutoCloseable {
 
     private WebElement findElement(ObjectLocator element)  {
 
-        int retry = settings.contains("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
+        int retry = settings.containsKey("find.element.retry") ? Integer.parseInt((String) settings.get("find.element.retry") ):10;
         int counter = 1;
-        long retryInterval = settings.contains("find.element.retry.interval") ? Integer.parseInt((String) settings.get("find.element.retry.interval") ):1000;;
+        long retryInterval = settings.containsKey("find.element.retry.interval") ? Integer.parseInt((String) settings.get("find.element.retry.interval") ):1000;;
         boolean elementNotPresent = true;
 
         WebElement webElement;

@@ -1,5 +1,7 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -54,8 +56,17 @@ public class Common {
 
     }
     
-    public static void adventus_RenameDownloadedFile(ExecutionHandler handler) {
-    	
+    public static String adventus_RenameDownloadedFile(ExecutionHandler handler, String filePath, String prefix) {
+
+        File file = new File(filePath);
+        File updatedFile = new File(file.getParentFile().getAbsolutePath()+File.separator+prefix+"_"+file.getName());
+        boolean success = file.renameTo(updatedFile);
+        if (!success) {
+            throw new RuntimeException("FAILED to rename "+file.getName());
+        } else {
+            System.out.println(updatedFile.getAbsolutePath());
+           return updatedFile.getAbsolutePath();
+        }
     }
     
     public static String adventus_StoreStudentID(ExecutionHandler handler) {

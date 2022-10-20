@@ -12,8 +12,7 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook(
-				"C:\\Personnel\\Adventus\\Project\\tasker\\src\\main\\resources\\Portal Check - RPA Pilot.xlsx");
+		excelDataSource.openWorkBook(handler.fileManager.getFileFromResource("Portal Check - RPA Pilot.xlsx"));
 		List<Map<String, Object>> data = excelDataSource.readExcel("Lodgements");
 
 		for (Map<String, Object> row : data) {
@@ -24,7 +23,7 @@ public class ProcessOne {
 				System.out.println(studentName);
 				Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"),handler.getConfiguration("COVENTRY_PASSWORD"));
 				String pdfFile = Common.coventry_DownloadTheOffer(handler, studentName);
-				Common.adventus_RenameDownloadedFile(handler);
+				pdfFile=Common.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
 				String pdfStudentID = Common.adventus_getStudentIDFromPDF(handler, pdfFile);
 				System.out.println(pdfStudentID);
 				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
