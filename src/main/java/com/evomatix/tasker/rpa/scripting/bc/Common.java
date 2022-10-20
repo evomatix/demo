@@ -81,19 +81,19 @@ public class Common {
 
     public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile){
 
-//        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
-//        List<String> lines= reader.extractLineContent(pdfFile);
+        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
+        List<String> lines= reader.extractLineContent(pdfFile);
     	  String studentID=null;
-//        for (String line:lines) {
-//            if(line.contains("Student ID:")){
-//                studentID=line.split(":")[1].trim();
-//                break;
-//            }
-//        }
-//
-//        if(studentID==null){
-//            handler.fail("Student id not Found in the downloaded PDF");
-//        }
+        for (String line:lines) {
+           if(line.contains("Student ID:")){
+                studentID=line.split(":")[1].trim();
+                break;
+            }
+        }
+
+        if(studentID==null){
+            handler.fail("Student id not Found in the downloaded PDF");
+        }
     		
     		return studentID;
     	}

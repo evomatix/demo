@@ -12,76 +12,28 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook("C:\\Personnel\\Adventus\\Project\\tasker\\src\\main\\resources\\Portal Check - RPA Pilot.xlsx");
+		excelDataSource.openWorkBook(
+				"C:\\Personnel\\Adventus\\Project\\tasker\\src\\main\\resources\\Portal Check - RPA Pilot.xlsx");
 		List<Map<String, Object>> data = excelDataSource.readExcel("Lodgements");
 
-		for (Map<String, Object> row:data) {
-
-			Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
-			Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
-			String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
-			System.out.println(studentName);
-			Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"), handler.getConfiguration("COVENTRY_PASSWORD"));
-			Common.coventry_DownloadTheOffer(handler, studentName);
-			Common.adventus_RenameDownloadedFile(handler);
-			Common.adventus_StoreStudentID(handler);
-			Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
-			Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName, handler.getConfiguration("ADVENTUS_OFFERTYPE"));
-		
-
-			try{
-				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
+		for (Map<String, Object> row : data) {
+			try {
+				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 				Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
-				//String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
+				String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
 				System.out.println(studentName);
-				Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"), handler.getConfiguration("COVENTRY_PASSWORD"));
-				String pdfFile =Common.coventry_DownloadTheOffer(handler, studentName);
-				String pdfStudentID=Common.adventus_getStudentIDFromPDF(handler,pdfFile);
+				Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"),handler.getConfiguration("COVENTRY_PASSWORD"));
+				String pdfFile = Common.coventry_DownloadTheOffer(handler, studentName);
+				Common.adventus_RenameDownloadedFile(handler);
+				String pdfStudentID = Common.adventus_getStudentIDFromPDF(handler, pdfFile);
 				System.out.println(pdfStudentID);
+				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
+				Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
 
-			}catch (Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
-
-	}
-
-
-
-
-	//Example data driven from Excel and Rename files
-	//need to update params
-
-	public static void parTwo(ExecutionHandler handler) {
-
-		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook("<excel_file_path>");
-		List<Map<String, Object>> data = excelDataSource.readExcel("<sheetName>");
-
-		for (Map<String, Object> row:data) {
-			Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"), handler.getConfiguration("ADVENTUS_PASSWORD"));
-			//acess data from sheet
-			Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
-			String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
-			System.out.println(studentName);
-			Common.coventry_Login(handler, "jayatakker@adventus.io", "Adventus@123");
-			Common.coventry_DownloadTheOffer(handler, studentName);
-			Common.adventus_RenameDownloadedFile(handler);
-			Common.adventus_StoreStudentID(handler);
-			Common.adventus_UploadOfferLetter(handler, "", studentName, handler.getConfiguration("ADVENTUS_OFFERTYPE"));
-			
-
-		}
-
-			//rename file
-
-			handler.fileManager.renameFile("c:/download/downloaded_pdf.pdf","new_name.pdf");
-
-
-
-
-
 
 	}
 
