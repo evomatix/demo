@@ -25,14 +25,19 @@ public class Common {
 		handler.pause(15000);
 	}
 
-	public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentID) {
+	public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName) {
 		handler.click(CoventryApplication.lnk_Application);
-		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentID", studentID));
+		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName", studentName));
 		handler.click(CoventryApplication.btn_DownloadTheOffer);
 		String file = handler.waitUntilDonwloadCompleted();
 		return file;
 	}
 
+	public static void coventry_Logout(ExecutionHandler handler) {
+		handler.click(CoventryApplication.lnk_UserName);
+		handler.click(CoventryApplication.lnk_Logout);
+
+	}
 	public static void adventus_Login(ExecutionHandler handler, String email, String password) {
 		handler.open(new AdventusLogin().getUrl(), 3000);
 		handler.type(AdventusLogin.txt_Email, email);
@@ -41,6 +46,7 @@ public class Common {
 	}
 
 	public static void adventus_Logout(ExecutionHandler handler) {
+		handler.pause(2000);
 		handler.click(AdventusLogin.btn_AccountCircle);
 		handler.click(AdventusLogin.btn_Logout);
 
@@ -82,7 +88,7 @@ public class Common {
 		handler.click(AdventusDocuments.dd_AddDocuments);
 		handler.click(AdventusDocuments.dd_AddDocumentsValue, Map.of("idf_Value", offerType));
 		handler.click(AdventusDocuments.btn_Add);
-		handler.click(AdventusDocuments.btn_Upload);
+		//handler.click(AdventusDocuments.btn_Upload);
 		handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
 	}
 
@@ -99,6 +105,7 @@ public class Common {
 		handler.click(AdventusApplication.btn_EditInstitutionStudentId);
 		handler.type(AdventusApplication.txt_InstitutionStudentId, studentID);
 		handler.click(AdventusApplication.btn_EditInstitutionStudentId);
+		handler.pause(15000);
 	}
 
 	public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile) {

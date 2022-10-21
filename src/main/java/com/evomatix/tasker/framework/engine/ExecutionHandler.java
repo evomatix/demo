@@ -301,17 +301,20 @@ public class ExecutionHandler implements AutoCloseable {
 
               StringSelection stringSelection= new StringSelection(uploadFilePath);
 
-             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
-
+              Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+             
+              Thread.sleep(1000);
+             
               Robot robot = new Robot();
 
               robot.keyPress(KeyEvent.VK_CONTROL);
               robot.keyPress(KeyEvent.VK_V);
               robot.keyRelease(KeyEvent.VK_CONTROL);
               robot.keyRelease(KeyEvent.VK_V);
+              robot.delay(1000);
               robot.keyPress(KeyEvent.VK_ENTER);
               robot.keyRelease(KeyEvent.VK_ENTER);
-              robot.delay(500);
+              robot.delay(1000);
 
           }
 
