@@ -45,6 +45,7 @@ public class ExecutionHandler implements AutoCloseable {
 
         this.loadProps();
         this.driver = WebDriverManager.chromedriver().create();
+        this.driver.manage().window().maximize();
 
     }
 
