@@ -29,6 +29,7 @@ public class Common {
 		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName", studentName));
 		String window =handler.getCurrentWindow();
 		handler.click(CoventryApplication.btn_DownloadTheOffer);
+		handler.pause(500);
 		String file = handler.waitUntilDonwloadCompleted();
 		handler.switchWindow(window);
 		return file;
