@@ -1,7 +1,6 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +27,10 @@ public class Common {
 	public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName) {
 		handler.click(CoventryApplication.lnk_Application);
 		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName", studentName));
+		String window =handler.getCurrentWindow();
 		handler.click(CoventryApplication.btn_DownloadTheOffer);
 		String file = handler.waitUntilDonwloadCompleted();
+		handler.switchWindow(window);
 		return file;
 	}
 
