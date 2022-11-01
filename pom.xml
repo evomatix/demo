@@ -15,11 +15,73 @@
 
     <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
    <dependencies>
+
        <dependency>
-           <groupId>com.evomatix.rpa</groupId>
-           <artifactId>tasker-engine</artifactId>
-           <version>1.0</version>
+           <groupId>org.seleniumhq.selenium</groupId>
+           <artifactId>selenium-java</artifactId>
+           <version>4.0.0-alpha-3</version>
        </dependency>
+       <!-- https://mvnrepository.com/artifact/com.relevantcodes/extentreports -->
+       <dependency>
+           <groupId>com.relevantcodes</groupId>
+           <artifactId>extentreports</artifactId>
+           <version>2.41.2</version>
+       </dependency>
+
+       <dependency>
+           <groupId>io.github.bonigarcia</groupId>
+           <artifactId>webdrivermanager</artifactId>
+           <version>5.3.0</version>
+       </dependency>
+       <dependency>
+           <groupId>org.slf4j</groupId>
+           <artifactId>slf4j-simple</artifactId>
+           <version>1.7.5</version>
+       </dependency>
+
+       <dependency>
+           <groupId>org.apache.poi</groupId>
+           <artifactId>poi-ooxml</artifactId>
+           <version>5.2.0</version>
+       </dependency>
+
+       <dependency>
+           <groupId>org.apache.pdfbox</groupId>
+           <artifactId>pdfbox</artifactId>
+           <version>2.0.3</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>commons-logging</groupId>
+                   <artifactId>commons-logging</artifactId>
+               </exclusion>
+           </exclusions>
+       </dependency>
+       <dependency>
+           <groupId>org.json</groupId>
+           <artifactId>json</artifactId>
+           <version>20160810</version>
+       </dependency>
+       <dependency>
+           <groupId>com.googlecode.json-simple</groupId>
+           <artifactId>json-simple</artifactId>
+           <version>1.1</version>
+       </dependency>
+       <dependency>
+           <groupId>technology.tabula</groupId>
+           <artifactId>tabula</artifactId>
+           <version>1.0.1</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>org.apache.pdfbox</groupId>
+                   <artifactId>pdfbox</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>org.slf4j</groupId>
+                   <artifactId>slf4j-simple</artifactId>
+               </exclusion>
+           </exclusions>
+       </dependency>
+
    </dependencies>
 
     <build>
@@ -55,23 +117,6 @@
                 <target>9</target>
             </configuration>
         </plugin>
-        <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.0.2</version>
-            <executions>
-                <execution>
-                    <id>copy-dependencies-compile</id>
-                    <phase>compile</phase>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                    <configuration>
-                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-
     </plugins>
     </build>
 
