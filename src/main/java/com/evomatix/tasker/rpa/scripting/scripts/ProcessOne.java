@@ -17,24 +17,27 @@ public class ProcessOne {
 
 		for (Map<String, Object> row : data) {
 			try {
-				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
-				Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
-				String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
-				System.out.println(studentName);
-				Common.adventus_Logout(handler);
-				Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"),handler.getConfiguration("COVENTRY_PASSWORD"));
-				String pdfFile = Common.coventry_DownloadTheOffer(handler, studentName);
-				pdfFile=Common.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
-				String pdfStudentID = Common.adventus_getStudentIDFromPDF(handler, pdfFile);
-				System.out.println(pdfStudentID);
-				String offerType =Common.adventus_getOfferType(handler, pdfFile);
-				System.out.println(offerType);
-				Common.coventry_Logout(handler);
-				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
-				Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,offerType, pdfFile);
-				Common.adventus_SendMessage(handler, "Offer Type", "Cource Name");
-				Common.adventus_EditApplication(handler, pdfStudentID);
-				Common.adventus_Logout(handler);
+
+				if(String.valueOf(row.get("")).equals(handler.getConfiguration("")) && String.valueOf(row.get("")).equals("")){
+					Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
+					Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
+					String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
+					System.out.println(studentName);
+					Common.adventus_Logout(handler);
+					Common.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"),handler.getConfiguration("COVENTRY_PASSWORD"));
+					String pdfFile = Common.coventry_DownloadTheOffer(handler, studentName);
+					pdfFile=Common.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
+					String pdfStudentID = Common.adventus_getStudentIDFromPDF(handler, pdfFile);
+					System.out.println(pdfStudentID);
+					String offerType =Common.adventus_getOfferType(handler, pdfFile);
+					System.out.println(offerType);
+					Common.coventry_Logout(handler);
+					Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
+					Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,offerType, pdfFile);
+					Common.adventus_SendMessage(handler, "Offer Type", "Cource Name");
+					Common.adventus_EditApplication(handler, pdfStudentID);
+					Common.adventus_Logout(handler);
+				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
