@@ -27,9 +27,11 @@ public class ProcessOne {
 				pdfFile=Common.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
 				String pdfStudentID = Common.adventus_getStudentIDFromPDF(handler, pdfFile);
 				System.out.println(pdfStudentID);
+				String offerType =Common.adventus_getOfferType(handler, pdfFile);
+				System.out.println(offerType);
 				Common.coventry_Logout(handler);
 				Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
-				Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,handler.getConfiguration("ADVENTUS_OFFERTYPE"), pdfFile);
+				Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,offerType, pdfFile);
 				Common.adventus_SendMessage(handler, "Offer Type", "Cource Name");
 				Common.adventus_EditApplication(handler, pdfStudentID);
 				Common.adventus_Logout(handler);

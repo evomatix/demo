@@ -88,9 +88,14 @@ public class Common {
 		handler.pause(5000);
 		handler.checkElementPresent(AdventusDocuments.dd_AddDocuments);
 		handler.click(AdventusDocuments.dd_AddDocuments);
-		handler.click(AdventusDocuments.dd_AddDocumentsValue, Map.of("idf_Value", offerType));
-		handler.click(AdventusDocuments.btn_Add);
-		//handler.click(AdventusDocuments.btn_Upload);
+		boolean isOptionAvailable=handler.checkElementPresent(AdventusDocuments.dd_AddDocumentsValue, Map.of("idf_Value", offerType));
+
+		if(isOptionAvailable){
+			handler.click(AdventusDocuments.btn_Add);
+		}else{
+			handler.click(AdventusDocuments.dd_AddAdditionalDocumentsLink, Map.of("idf_Value", offerType));
+			handler.click(AdventusDocuments.dd_AddAdditionalDocuments, Map.of("idf_Value", offerType));
+		}
 		handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
 	}
 
@@ -141,5 +146,30 @@ public class Common {
         }
     }
 
+	public static String adventus_getOfferType(ExecutionHandler handler, String pdfFile) {
+
+		SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
+		List<String> lines = reader.extractLineContent(pdfFile);
+		String offerType = null;
+		for (String line : lines) {
+			if (line.contains("Conditional Offer")) {
+				offerType ="Conditional Offer";
+				break;
+			}else if (line.contains("Unconditional Offer")) {
+				offerType ="Conditional Offer";
+				break;
+			}else if (line.contains("Rejected")) {
+				offerType ="Application Outcome";
+				break;
+			}else if (line.contains("Withdrawn")) {
+				offerType ="Application Outcome";
+				break;
+			}
+		}
+		if (offerType == null) {
+			handler.fail("Student id not Found in the downloaded PDF");
+		}
+
+		return offerType;}
 
 }
