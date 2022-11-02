@@ -18,7 +18,7 @@ public class ProcessOne {
 		for (Map<String, Object> row : data) {
 			try {
 
-				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME")) && String.valueOf(row.get("Execution Status")).equals("")){
+				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME")) && String.valueOf(row.get("Execution Status")).equals("null")){
 					Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 					Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
 					String studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
