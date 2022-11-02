@@ -92,11 +92,13 @@ public class Common {
 
 		if(isOptionAvailable){
 			handler.click(AdventusDocuments.btn_Add);
+			handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
+
 		}else{
 			handler.click(AdventusDocuments.dd_AddAdditionalDocumentsLink, Map.of("idf_Value", offerType));
-			handler.click(AdventusDocuments.dd_AddAdditionalDocuments, Map.of("idf_Value", offerType));
+			handler.handleFileUpload(AdventusDocuments.dd_AddAdditionalDocuments, filePath, Map.of("idf_Value", offerType));
+
 		}
-		handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
 	}
 
 	public static void adventus_SendMessage(ExecutionHandler handler, String offerType, String courceName) {
