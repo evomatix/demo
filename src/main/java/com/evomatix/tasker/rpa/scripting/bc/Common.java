@@ -1,10 +1,14 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.framework.fileops.ExcelManager;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusApplication;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusDocuments;
 import com.evomatix.tasker.framework.fileops.SimplePDFReader;
@@ -172,6 +176,59 @@ public class Common {
 			handler.fail("Student id not Found in the downloaded PDF");
 		}
 
-		return offerType;}
+		return offerType;
+	}
+
+
+	public static void updateExcelError(ExcelManager excelDataSource, int row, String error){
+		Calendar c= Calendar.getInstance();
+
+		excelDataSource.writeExcel(row,15,Common.getToday());
+		excelDataSource.writeExcel(row,16,error);
+		excelDataSource.writeExcel(row,15,Common.getNextWorkingDay(3));
+	}
+
+
+	public static void updateExcelOutcome(ExcelManager excelDataSource, int row, String outcome){
+		excelDataSource.writeExcel(row,15,Common.getToday());
+		excelDataSource.writeExcel(row,16,outcome);
+	}
+
+
+	private static String getNextWorkingDay(int days){
+		Date date=new Date();
+		Calendar calendar = Calendar.getInstance();
+		date=calendar.getTime();
+		SimpleDateFormat s;
+		s=new SimpleDateFormat("MM/dd/yy");
+
+		System.out.println(s.format(date));
+
+		for(int i=0;i<days;)
+		{
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+			//here even sat and sun are added
+			//but at the end it goes to the correct week day.
+			//because i is only increased if it is week day
+			if(calendar.get(Calendar.DAY_OF_WEEK)<=5)
+			{
+				i++;
+			}
+
+		}
+		date=calendar.getTime();
+		s=new SimpleDateFormat("MMM dd, yyyy");
+		return s.format(date);
+	}
+
+	private static String getToday(){
+
+		Date date=new Date();
+		SimpleDateFormat s =new SimpleDateFormat("MMM dd, yyyy");
+		return s.format(date);
+	}
 
 }
+
+
+
