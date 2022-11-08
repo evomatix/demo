@@ -182,16 +182,15 @@ public class Common {
 
 	public static void updateExcelError(ExcelManager excelDataSource, int row, String error){
 		Calendar c= Calendar.getInstance();
-
-		excelDataSource.writeExcel(row,15,Common.getToday());
-		excelDataSource.writeExcel(row,16,error);
-		excelDataSource.writeExcel(row,15,Common.getNextWorkingDay(3));
+		excelDataSource.writeExcel(row,14,Common.getToday());
+		excelDataSource.writeExcel(row,15,error);
+		excelDataSource.writeExcel(row,17,Common.getNextWorkingDay(3));
 	}
 
 
 	public static void updateExcelOutcome(ExcelManager excelDataSource, int row, String outcome){
-		excelDataSource.writeExcel(row,15,Common.getToday());
-		excelDataSource.writeExcel(row,16,outcome);
+		excelDataSource.writeExcel(row,14,Common.getToday());
+		excelDataSource.writeExcel(row,15,outcome);
 	}
 
 
