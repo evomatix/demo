@@ -24,6 +24,7 @@ public class Common {
 		handler.open(new CoventryLogin().getUrl(), 3000);
 		handler.type(CoventryLogin.txt_UserName, userName);
 		handler.type(CoventryLogin.txt_Password, password);
+		handler.pause(2000);
 		handler.click(CoventryLogin.btn_Login);
 		handler.pause(15000);
 	}
@@ -40,6 +41,7 @@ public class Common {
 	}
 
 	public static void coventry_Logout(ExecutionHandler handler) {
+		handler.open(new CoventryLogin().getUrl(), 3000);
 		handler.click(CoventryApplication.lnk_UserName);
 		handler.click(CoventryApplication.lnk_Logout);
 
@@ -52,6 +54,7 @@ public class Common {
 	}
 
 	public static void adventus_Logout(ExecutionHandler handler) {
+		handler.open(new AdventusLogin().getUrl(), 3000);
 		handler.pause(2000);
 		handler.click(AdventusLogin.btn_AccountCircle);
 		handler.click(AdventusLogin.btn_Logout);
@@ -59,6 +62,7 @@ public class Common {
 	}
 
 	public static void adventus_SearchStudent(ExecutionHandler handler, String searchText) {
+		handler.open(new AdventusLogin().getUrl(), 3000);
 		handler.type(AdventusStudentStatus.txt_Search, searchText);
 		handler.pause(5000);
 	}
@@ -79,6 +83,7 @@ public class Common {
 	}
 
 	public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname,String offerType, String filePath) {
+		handler.open(new AdventusLogin().getUrl(), 3000);
 		handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
 		handler.click(AdventusStudentStatus.lnk_SearchApply);
 		handler.click(AdventusStudentStatus.lnk_Documents);

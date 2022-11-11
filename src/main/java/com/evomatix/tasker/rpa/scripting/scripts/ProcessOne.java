@@ -47,6 +47,7 @@ public class ProcessOne {
 		Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		String studentName;
 		try{
+
 			Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
 			studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
 			handler.writeToReport("Student Name :"+studentName);
