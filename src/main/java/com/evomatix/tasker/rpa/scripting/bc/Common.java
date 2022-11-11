@@ -43,6 +43,7 @@ public class Common {
 	public static void coventry_Logout(ExecutionHandler handler) {
 		handler.click(CoventryApplication.lnk_UserName);
 		handler.click(CoventryApplication.lnk_Logout);
+		handler.pause(1000);
 
 	}
 	public static void adventus_Login(ExecutionHandler handler, String email, String password) {
