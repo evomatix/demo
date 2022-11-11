@@ -17,6 +17,7 @@ import com.evomatix.tasker.rpa.scripting.pages.AdventusShow;
 import com.evomatix.tasker.rpa.scripting.pages.AdventusStudentStatus;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryApplication;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryLogin;
+import com.google.common.base.CaseFormat;
 
 public class Common {
 
@@ -31,7 +32,7 @@ public class Common {
 
 	public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName) {
 		handler.click(CoventryApplication.lnk_Application);
-		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName", studentName));
+		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
 		String window =handler.getCurrentWindow();
 		handler.click(CoventryApplication.btn_DownloadTheOffer);
 		handler.pause(500);
