@@ -4,6 +4,7 @@ import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.fileops.ExcelManager;
 import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.rpa.scripting.bc.Common;
+import com.evomatix.tasker.rpa.scripting.bc.ExcelOps;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook(handler.fileManager.getFileFromResource("Portal Check - RPA Pilot.xlsx"),"Lodgements");
+		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Data");
 		List<Map<String, Object>> data = excelDataSource.readExcel();
 		int rowNumber =0;
 
@@ -22,13 +23,13 @@ public class ProcessOne {
 			try {
 
 				//1st check
-				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME")) && String.valueOf(row.get("Execution Status")).equals("null")){
+				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME")) && String.valueOf(row.get("Checked Date")).trim().equals("")){
 					String outcome =ProcessOne.coventryProcess(handler,row);
-					Common.updateExcelOutcome(excelDataSource,rowNumber,outcome);
+					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
 
 			} catch (Exception e) {
-				Common.updateExcelError(excelDataSource,rowNumber,"Offer Not Found");
+				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Offer Not Found");
 				e.printStackTrace();
 
 				handler.log(LogType.FAIL,"FAIL",e.getMessage());
@@ -40,7 +41,7 @@ public class ProcessOne {
 
 
 	public static String coventryProcess(ExecutionHandler handler, Map<String, Object> row){
-		handler.reporter.startProcess("Student :"+  (String) row.get("Student Name") +" - "+(String) row.get("Student ID"));
+		handler.reporter.startProcess("Student : "+(String)row.get("Student ID"));
 
 		//step 01
 		Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
