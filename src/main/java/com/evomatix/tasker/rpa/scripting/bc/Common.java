@@ -32,7 +32,7 @@ public class Common {
 
 	public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName) {
 		handler.click(CoventryApplication.lnk_Application);
-		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
+		handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
 		String window =handler.getCurrentWindow();
 		handler.click(CoventryApplication.btn_DownloadTheOffer);
 		handler.pause(500);
@@ -180,6 +180,30 @@ public class Common {
 		}
 
 		return offerType;
+	}
+
+
+	public static String convertToTitleCaseIteratingChars(String text) {
+		if (text == null || text.isEmpty()) {
+			return text;
+		}
+
+		StringBuilder converted = new StringBuilder();
+
+		boolean convertNext = true;
+		for (char ch : text.toCharArray()) {
+			if (Character.isSpaceChar(ch)) {
+				convertNext = true;
+			} else if (convertNext) {
+				ch = Character.toTitleCase(ch);
+				convertNext = false;
+			} else {
+				ch = Character.toLowerCase(ch);
+			}
+			converted.append(ch);
+		}
+
+		return converted.toString();
 	}
 
 
