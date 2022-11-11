@@ -8,7 +8,7 @@ import com.evomatix.tasker.framework.model.Page;
 public class CoventryLogin extends Page {
 
     public CoventryLogin(){
-        this.setUrl("https://partnerportal.coventry.ac.uk/s/login/");
+        this.setUrl("https://partnerportal.coventry.ac.uk/s/");
     }
 
     public static ObjectLocator txt_UserName = new ObjectLocator("txt_UserName","//input[@name='username']", LocatorType.XPATH);
