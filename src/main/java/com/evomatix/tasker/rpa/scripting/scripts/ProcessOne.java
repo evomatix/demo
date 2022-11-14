@@ -23,7 +23,8 @@ public class ProcessOne {
 			try {
 
 				//1st check
-				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME")) && String.valueOf(row.get("Checked Date")).trim().equals("")){
+				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME"))
+						&& (row.get("Checked Date")==null || String.valueOf(row.get("Checked Date")).trim().equals(""))){
 					String outcome =ProcessOne.coventryProcess(handler,row);
 					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
