@@ -41,15 +41,16 @@ public class ProcessOne {
 
 
 	public static String coventryProcess(ExecutionHandler handler, Map<String, Object> row){
-		handler.reporter.startProcess("Student : "+(String)row.get("Student ID"));
+		String studentID = String.valueOf(row.get("Student ID")).split("\\.")[0];
+		handler.reporter.startProcess("Student : "+studentID);
 
 		//step 01
 		Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		String studentName;
 		try{
 
-			Common.adventus_SearchStudent(handler, (String) row.get("Student ID"));
-			studentName = Common.adventus_GetStudentName(handler, (String) row.get("Student ID"));
+			Common.adventus_SearchStudent(handler,studentID);
+			studentName = Common.adventus_GetStudentName(handler,studentID);
 			handler.writeToReport("Student Name :"+studentName);
 		}catch (Exception e){
 			Common.adventus_Logout(handler); throw e;
@@ -76,7 +77,7 @@ public class ProcessOne {
 		//step 03
 		Common.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		try{
-			Common.adventus_UploadOfferLetter(handler, (String) row.get("Student ID"), studentName,offerType, pdfFile);
+			Common.adventus_UploadOfferLetter(handler, studentID, studentName,offerType, pdfFile);
 			Common.adventus_SendMessage(handler, "Offer Type", "Cource Name");
 			Common.adventus_EditApplication(handler, pdfStudentID);
 		}catch (Exception e){
