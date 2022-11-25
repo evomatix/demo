@@ -68,8 +68,8 @@ public class Common {
 	}
 
 	public static String adventus_GetStudentName(ExecutionHandler handler, String studentID) {
-		String studentName = handler.getText(AdventusStudentStatus.lnk_StudentNameByID,
-				Map.of("idf_StudentID", studentID));
+		//String studentName = handler.getText(AdventusStudentStatus.lnk_StudentNameByID, Map.of("idf_StudentID", studentID));
+		String studentName = handler.getText(AdventusStudentStatus.lbl_StudentName);
 		return studentName;
 	}
 
