@@ -83,7 +83,8 @@ public class Common {
 	}
 
 	public static void adventus_UploadOfferLetter(ExecutionHandler handler, String studentID, String studentname,String offerType, String filePath) {
-		handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
+		//handler.click(AdventusStudentStatus.lnk_StudentName,Map.of("idf_StudentID", studentID, "idf_StudentName", studentname));
+		Common.adventus_SearchStudent(handler,studentID);
 		handler.click(AdventusStudentStatus.lnk_SearchApply);
 		handler.click(AdventusStudentStatus.lnk_Documents);
 		handler.pause(5000);
