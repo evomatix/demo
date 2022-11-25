@@ -62,8 +62,9 @@ public class Common {
 	}
 
 	public static void adventus_SearchStudent(ExecutionHandler handler, String searchText) {
-		handler.type(AdventusStudentStatus.txt_Search, searchText);
-		handler.pause(5000);
+		//handler.type(AdventusStudentStatus.txt_Search, searchText);
+		//handler.pause(5000);
+		handler.open("https://app.adventus.io/counsellor/student/"+searchText+"/show",1000);
 	}
 
 	public static String adventus_GetStudentName(ExecutionHandler handler, String studentID) {
