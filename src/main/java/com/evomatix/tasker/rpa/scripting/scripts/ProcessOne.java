@@ -16,7 +16,7 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Data");
+		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Test Data - 23rd Nov");
 		List<Map<String, Object>> data = excelDataSource.readExcel();
 		int rowNumber =0;
 
@@ -36,11 +36,11 @@ public class ProcessOne {
 				e.printStackTrace();
 
 				handler.log(LogType.FAIL,"FAIL",e.getMessage());
-			}finally {
-				Adventus.adventus_Logout(handler);
-				Coventry.coventry_Logout(handler);
 			}
 		}
+
+		Adventus.adventus_Logout(handler);
+		Coventry.coventry_Logout(handler);
 
 	}
 
