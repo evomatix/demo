@@ -16,7 +16,7 @@ public class ProcessOne {
 	public static void partOne(ExecutionHandler handler) {
 
 		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Test Data - 23rd Nov");
+		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Data");
 		List<Map<String, Object>> data = excelDataSource.readExcel();
 		int rowNumber =0;
 
