@@ -3,10 +3,8 @@ package com.evomatix.tasker.rpa.scripting.scripts;
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.fileops.ExcelManager;
 import com.evomatix.tasker.framework.reporting.LogType;
-import com.evomatix.tasker.rpa.scripting.bc.Adventus;
-import com.evomatix.tasker.rpa.scripting.bc.Common;
-import com.evomatix.tasker.rpa.scripting.bc.Coventry;
-import com.evomatix.tasker.rpa.scripting.bc.ExcelOps;
+import com.evomatix.tasker.rpa.scripting.bc.*;
+import org.apache.hc.core5.http.nio.AsyncResponseConsumer;
 
 import java.util.List;
 import java.util.Map;
@@ -64,36 +62,35 @@ public class ProcessOne {
 
 		//step 02
 		Coventry.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"),handler.getConfiguration("COVENTRY_PASSWORD"));
-		String pdfFile;
+		String pdfFile=null;
+		String updatedPdfFile;
 		String pdfStudentID;
 		String offerType;
 		String currentWindow="";
 		try{
 			pdfFile = Coventry.coventry_DownloadTheOffer(handler, studentName,currentWindow);
-			pdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
-			pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, pdfFile);
+			updatedPdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
+			pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, updatedPdfFile);
 			handler.writeToReport("Extracted student ID :"+pdfStudentID);
-			offerType =Adventus.adventus_getOfferType(handler, pdfFile);
+			offerType =Adventus.adventus_getOfferType(handler, updatedPdfFile);
 			handler.writeToReport("Offer Type :"+offerType);
 		}catch (Exception e){
-			if(!currentWindow.equals("")){
-				try{
-					handler.switchWindow(currentWindow);
-				}catch (Exception ex){
-					e.printStackTrace();
-				}
-			}
+			Utils.switchBackToBaseWindow(handler,currentWindow);
 			 throw e;
+		}finally {
+			Utils.cleanupFile(handler,pdfFile);
 		}
 
 		//step 03
 		Adventus.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		try{
-			Adventus.adventus_UploadOfferLetter(handler, studentID, studentName,offerType, pdfFile);
+			Adventus.adventus_UploadOfferLetter(handler, studentID, studentName,offerType, updatedPdfFile);
 			Adventus.adventus_SendMessage(handler, "Offer Type", "Cource Name");
 			Adventus.adventus_EditApplication(handler, pdfStudentID);
 		}catch (Exception e){
 			 throw e;
+		}finally {
+			Utils.cleanupFile(handler,updatedPdfFile);
 		}
 
 
