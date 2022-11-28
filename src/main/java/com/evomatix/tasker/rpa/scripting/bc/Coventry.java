@@ -32,7 +32,7 @@ public class Coventry {
 
     }
 
-    public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName) {
+    public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName, String currentWindow) {
         handler.click(CoventryApplication.lnk_Application);
 
         try{
@@ -41,7 +41,7 @@ public class Coventry {
             throw new RuntimeException("Student not found in Coventry portal",e);
         }
 
-        String window =handler.getCurrentWindow();
+        currentWindow =handler.getCurrentWindow();
 
         try{
             handler.click(CoventryApplication.btn_DownloadTheOffer);
@@ -51,7 +51,7 @@ public class Coventry {
 
         handler.pause(500);
         String file = handler.waitUntilDonwloadCompleted();
-        handler.switchWindow(window);
+        handler.switchWindow(currentWindow);
         return file;
     }
 

@@ -28,11 +28,11 @@ public class ProcessOne {
 				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME"))
 						&& (row.get("Checked Date")==null || String.valueOf(row.get("Checked Date")).trim().equals(""))){
 					String outcome =ProcessOne.coventryProcess(handler,row, String.valueOf(row.get("Student ID")).split("\\.")[0]);
-				//	ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
+					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
 
 			} catch (Exception e) {
-			//	ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Offer Not Found");
+				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Offer Not Found");
 				e.printStackTrace();
 
 				handler.log(LogType.FAIL,"FAIL",e.getMessage());
@@ -67,14 +67,22 @@ public class ProcessOne {
 		String pdfFile;
 		String pdfStudentID;
 		String offerType;
+		String currentWindow="";
 		try{
-			pdfFile = Coventry.coventry_DownloadTheOffer(handler, studentName);
+			pdfFile = Coventry.coventry_DownloadTheOffer(handler, studentName,currentWindow);
 			pdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
 			pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, pdfFile);
 			handler.writeToReport("Extracted student ID :"+pdfStudentID);
 			offerType =Adventus.adventus_getOfferType(handler, pdfFile);
 			handler.writeToReport("Offer Type :"+offerType);
 		}catch (Exception e){
+			if(!currentWindow.equals("")){
+				try{
+					handler.switchWindow(currentWindow);
+				}catch (Exception ex){
+					e.printStackTrace();
+				}
+			}
 			 throw e;
 		}
 
