@@ -77,6 +77,7 @@ public class Adventus {
         boolean isOptionAvailable=handler.checkElementPresent(AdventusDocuments.dd_AddDocumentsValue, Map.of("idf_Value", offerType));
 
         if(isOptionAvailable){
+            handler.click(AdventusDocuments.dd_AddDocumentsValue, Map.of("idf_Value", offerType));
             handler.click(AdventusDocuments.btn_Add);
             handler.scrollToBottom();
             handler.pause(5000);
