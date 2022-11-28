@@ -78,6 +78,8 @@ public class Adventus {
 
         if(isOptionAvailable){
             handler.click(AdventusDocuments.btn_Add);
+            handler.scrollToBottom();
+            handler.pause(5000);
             handler.handleFileUpload(AdventusDocuments.btn_Upload, filePath);
 
         }else{
