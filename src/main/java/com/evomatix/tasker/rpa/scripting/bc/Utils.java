@@ -31,7 +31,7 @@ public class Utils {
         if(!currentWindow.equals("")){
             try{
                 handler.switchToWindowByTitle(currentWindow);
-                handler.closeAllOtherTabs();
+               // handler.closeAllOtherTabs();
             }catch (Exception ex){
                 ex.printStackTrace();
             }

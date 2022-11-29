@@ -57,7 +57,7 @@ public class Coventry {
 
         String file = handler.waitUntilDonwloadCompleted();
         handler.switchToWindowByTitle(currentWindow);
-        handler.closeAllOtherTabs();
+       // handler.closeAllOtherTabs();
         return file;
     }
 
