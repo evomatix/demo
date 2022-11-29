@@ -30,7 +30,8 @@ public class Utils {
     public static void switchBackToBaseWindow(ExecutionHandler handler,String currentWindow){
         if(!currentWindow.equals("")){
             try{
-                handler.switchWindow(currentWindow);
+                handler.switchToWindowByTitle(currentWindow);
+                handler.closeAllOtherTabs();
             }catch (Exception ex){
                 ex.printStackTrace();
             }

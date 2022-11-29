@@ -46,7 +46,7 @@ public class Coventry {
         }
         handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
 
-
+        currentWindow = handler.getCurrentWindowTitle();
 
         try{
             handler.click(CoventryApplication.btn_DownloadTheOffer);
@@ -56,7 +56,8 @@ public class Coventry {
 
 
         String file = handler.waitUntilDonwloadCompleted();
-        handler.switchWindow(currentWindow);
+        handler.switchToWindowByTitle(currentWindow);
+        handler.closeAllOtherTabs();
         return file;
     }
 
