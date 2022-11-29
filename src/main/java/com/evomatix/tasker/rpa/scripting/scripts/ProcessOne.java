@@ -31,7 +31,7 @@ public class ProcessOne {
 
 			} catch (Exception e) {
 				if(e.getMessage().startsWith("MSG:")){
-					ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Multiple Apps Found");
+					ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Multiple Applications Found");
 				}else{
 					ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Offer Not Found");
 				}

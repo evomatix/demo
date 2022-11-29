@@ -41,7 +41,9 @@ public class Coventry {
             throw new RuntimeException("Student not found in Coventry portal");
         }
         int count =  handler.getElementCount(CoventryApplication.lnk_StudentNames, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
+        handler.writeToReport(" Applications count ["+count+"] in Coventry Portal");
         if(count>1){
+            handler.writeToReport("Multiple Applications ("+count+") are found in Coventry Portal");
             throw new RuntimeException("MSG: Multiple Applications Found");
         }
         handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
