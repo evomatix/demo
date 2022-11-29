@@ -35,11 +35,16 @@ public class Coventry {
     public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName, String currentWindow) {
         handler.click(CoventryApplication.lnk_Application);
 
-        try{
-            handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
-        }catch (Exception e){
-            throw new RuntimeException("Student not found in Coventry portal",e);
+        boolean isStudentFound= handler.checkElementPresent(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
+
+        if(!isStudentFound){
+            throw new RuntimeException("Student not found in Coventry portal");
         }
+        int count =  handler.getElementCount(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
+        if(count>1){
+            throw new RuntimeException("MSG: Multiple Applications Found");
+        }
+        handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
 
         currentWindow =handler.getCurrentWindow();
 
@@ -49,7 +54,7 @@ public class Coventry {
             throw new RuntimeException("Offer not found in Coventry portal",e);
         }
 
-        handler.pause(500);
+        handler.pause(3000);
         String file = handler.waitUntilDonwloadCompleted();
         handler.switchWindow(currentWindow);
         return file;

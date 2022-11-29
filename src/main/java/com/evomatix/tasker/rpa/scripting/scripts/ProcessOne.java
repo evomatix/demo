@@ -30,7 +30,11 @@ public class ProcessOne {
 				}
 
 			} catch (Exception e) {
-				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Offer Not Found");
+				if(e.getMessage().startsWith("MSG:")){
+					ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Multiple Apps Found");
+				}else{
+					ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Offer Not Found");
+				}
 				e.printStackTrace();
 
 				handler.log(LogType.FAIL,"FAIL",e.getMessage());
