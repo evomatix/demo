@@ -21,11 +21,15 @@ public class AdventusStudentStatus extends Page {
     public static ObjectLocator lnk_Documents= new ObjectLocator("lnk_Documents","//a/span[text()='Documents']", LocatorType.XPATH);
     public static ObjectLocator lnk_StudentInformation = new ObjectLocator("lnk_StudentInformation","//div[text()='Student Information']", LocatorType.XPATH);
     public static ObjectLocator lnk_ActivityOverview = new ObjectLocator("lnk_ActivityOverview","//a/span[text()='Activity & Overview']", LocatorType.XPATH);
+    public static ObjectLocator lnk_Task = new ObjectLocator("lnk_Task","//button[contains(text(),'Task')]", LocatorType.XPATH);
+    public static ObjectLocator rdb_4_6 = new ObjectLocator("lnk_4_6","//input[@value='4.60']", LocatorType.XPATH);
+    public static ObjectLocator btn_Confirmation = new ObjectLocator("Confirmation","//div[contains(text(),'Confirm task complete')]//..//button[contains(text(),'Yes')]", LocatorType.XPATH);
 
-  
-  
-  
-    
+
+
+
+
+
 
 }
 

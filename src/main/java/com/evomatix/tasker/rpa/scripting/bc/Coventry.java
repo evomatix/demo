@@ -32,7 +32,8 @@ public class Coventry {
 
     }
 
-    public static String coventry_DownloadTheOffer(ExecutionHandler handler, String studentName, String currentWindow) {
+
+    public static String coventry_FindTheOffer(ExecutionHandler handler, String studentName) {
         handler.click(CoventryApplication.lnk_Application);
 
         boolean isStudentFound= handler.checkElementPresent(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
@@ -47,8 +48,15 @@ public class Coventry {
             throw new RuntimeException("MSG: Multiple Applications Found");
         }
         handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
+        String application= handler.getText(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
+        return application.split("/")[1].trim();
+    }
 
-        currentWindow = handler.getCurrentWindowTitle();
+
+
+    public static String coventry_DownloadTheOffer(ExecutionHandler handler) {
+
+        String  currentWindow = handler.getCurrentWindowTitle();
 
         try{
             handler.click(CoventryApplication.btn_DownloadTheOffer);

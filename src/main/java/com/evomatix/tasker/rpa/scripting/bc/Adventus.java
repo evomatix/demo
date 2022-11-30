@@ -38,10 +38,10 @@ public class Adventus {
 
     }
 
-    public static void adventus_SearchStudent(ExecutionHandler handler, String searchText) {
+    public static void adventus_SearchStudent(ExecutionHandler handler, String studentID) {
         //handler.type(AdventusStudentStatus.txt_Search, searchText);
         //handler.pause(5000);
-        handler.open("https://app.adventus.io/counsellor/student/"+searchText+"/show",1000);
+        handler.open("https://app.adventus.io/counsellor/student/"+studentID+"/show",1000);
     }
 
     public static String adventus_GetStudentName(ExecutionHandler handler, String studentID) {
@@ -90,21 +90,70 @@ public class Adventus {
         }
     }
 
-    public static void adventus_SendMessage(ExecutionHandler handler, String offerType, String courceName) {
+    public static void adventus_SendMessage(ExecutionHandler handler, String offerType, String courseName) {
         handler.click(AdventusStudentStatus.lnk_StudentInformation);
         handler.click(AdventusStudentStatus.lnk_ActivityOverview);
-        handler.type(AdventusShow.txt_MessageBox, "Dear Partner, Please be informed that we have received a "+ offerType + " from Coventry University for " + courceName+ " and the same has been attached under offer & confirmation documents. We would request you to fulfil all the conditions as mentioned in the offer letter and pay the initial deposit as per the requirement from the university. Some universities require the deposit before the university credibility interview and some require deposit only after clearing the credibility interview. Therefore if there are conditions to successfully pass the credibility interview then we would advise you not to pay a deposit till the credibility interview is cleared. It is a mandate that the student should undergo a mock interview with us before going for a university credibility interview. Thank you");
+        handler.type(AdventusShow.txt_MessageBox, "Dear Partner, Please be informed that we have received a "+offerType+" from Coventry University for "+courseName+" and the same has been attached under offer & confirmation documents. We would request you to fulfil all the conditions (If Any) as mentioned in the offer letter and pay the initial deposit as per the requirement from the university. Some universities require the deposit before the university credibility interview and some require deposit only after clearing the credibility interview. Therefore if there are conditions to successfully pass the credibility interview then we would advise you not to pay a deposit till the credibility interview is cleared. It is a mandate that the student should undergo a mock interview with us before going for a university credibility interview. Thank you");
         handler.click(AdventusShow.btn_Send);
     }
 
-    public static void adventus_EditApplication(ExecutionHandler handler, String studentID) {
+
+    public static void adventus_updateTask(ExecutionHandler handler, String studentID, String offerType) {
+        if(offerType.equals("Full Offer")){
+            Adventus.adventus_SearchStudent(handler,studentID);
+            handler.click(AdventusStudentStatus.lnk_Task);
+            boolean isEnabled = handler.isElementEnabled(AdventusStudentStatus.rdb_4_6);
+            if(isEnabled){
+                handler.click(AdventusStudentStatus.rdb_4_6);
+                boolean isConfirmation = handler.checkElementPresent(AdventusStudentStatus.btn_Confirmation);
+                if(isConfirmation){
+                    handler.click(AdventusStudentStatus.btn_Confirmation);
+                }
+            }
+        }
+    }
+
+
+
+    public static void adventus_EditApplication(ExecutionHandler handler, String studentID, String courseTitle, String offerType) {
         handler.click(AdventusStudentStatus.lnk_Application);
-        handler.click(AdventusApplication.btn_Edit);
+        //wait till the element is loaded
+        handler.checkElementPresent(AdventusApplication.btn_Edit);
+
+        //counting number of rows
+        int rows = handler.getElementCount(AdventusApplication.btn_Edit);
+        handler.writeToReport("["+rows+"] Number of Applications found in Adventus portal");
+        if(rows==1){
+            handler.click(AdventusApplication.btn_Edit);
+        }else{
+            handler.writeToReport("Checking for a Application with course title ["+courseTitle+"]");
+            boolean isFound= handler.checkElementPresent(AdventusApplication.btn_EditWithCourse,Map.of("title", courseTitle));
+            if(isFound){
+                handler.click(AdventusApplication.btn_EditWithCourse, Map.of("title", courseTitle));
+            }else{
+                throw new RuntimeException("Unable to Find relevant application for course ["+courseTitle+"] among ["+rows+"] Applications");
+            }
+
+        }
         handler.click(AdventusApplication.btn_EditInstitutionStudentId);
         handler.type(AdventusApplication.txt_InstitutionStudentId, studentID);
         handler.click(AdventusApplication.btn_EditInstitutionStudentId);
-        handler.pause(15000);
+        handler.pause(3000);
+
+        boolean isEnabled = handler.isElementEnabled(AdventusApplication.select_OfferType);
+        if(isEnabled){
+
+            if(offerType.equals("Full Offer") || offerType.equals("Conditional Offer")){
+                handler.select(AdventusApplication.select_OfferType,offerType);
+            }else{
+                handler.select(AdventusApplication.select_OfferType,"Declined, with reason selected");
+            }
+
+        }
+
     }
+
+
 
     public static String adventus_getStudentIDFromPDF(ExecutionHandler handler, String pdfFile) {
 
@@ -124,6 +173,26 @@ public class Adventus {
         return studentID;
     }
 
+
+    public static String adventusGetCourseTitleFromPDF(ExecutionHandler handler, String pdfFile) {
+
+        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
+        List<String> lines = reader.extractLineContent(pdfFile);
+        String courseTitle = null;
+        for (String line : lines) {
+            if (line.contains("Course Title")) {
+                courseTitle = line.replace("Course Title","").trim();
+                break;
+            }
+        }
+        if (courseTitle == null) {
+            handler.fail("Course Title not Found in the downloaded PDF");
+        }
+
+        return courseTitle;
+    }
+
+
     public static String adventus_RenameDownloadedFile(ExecutionHandler handler, String filePath, String prefix) {
 
         File file = new File(filePath);
@@ -137,17 +206,19 @@ public class Adventus {
         }
     }
 
+
     public static String adventus_getOfferType(ExecutionHandler handler, String pdfFile) {
 
         SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
         List<String> lines = reader.extractLineContent(pdfFile);
+
         String offerType = null;
         for (String line : lines) {
             if (line.contains("Conditional Offer")) {
                 offerType ="Conditional Offer";
                 break;
             }else if (line.contains("Unconditional Offer")) {
-                offerType ="Conditional Offer";
+                offerType ="Full Offer";
                 break;
             }else if (line.contains("Rejected")) {
                 offerType ="Application Outcome";

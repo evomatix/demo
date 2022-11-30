@@ -70,16 +70,18 @@ public class ProcessOne {
 		String updatedPdfFile;
 		String pdfStudentID;
 		String offerType;
-		String currentWindow="";
+		String courseTitle;
 		try{
-			pdfFile = Coventry.coventry_DownloadTheOffer(handler, studentName,currentWindow);
+			courseTitle=Coventry.coventry_FindTheOffer(handler,studentName);
+			pdfFile = Coventry.coventry_DownloadTheOffer(handler);
 			updatedPdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
 			pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, updatedPdfFile);
 			handler.writeToReport("Extracted student ID :"+pdfStudentID);
 			offerType =Adventus.adventus_getOfferType(handler, updatedPdfFile);
+			courseTitle = Adventus.adventusGetCourseTitleFromPDF(handler,updatedPdfFile);
 			handler.writeToReport("Offer Type :"+offerType);
 		}catch (Exception e){
-			Utils.switchBackToBaseWindow(handler,currentWindow);
+		//	Utils.switchBackToBaseWindow(handler,currentWindow);
 			 throw e;
 		}finally {
 			Utils.cleanupFile(handler,pdfFile);
@@ -89,8 +91,9 @@ public class ProcessOne {
 		Adventus.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		try{
 			Adventus.adventus_UploadOfferLetter(handler, studentID, studentName,offerType, updatedPdfFile);
-			Adventus.adventus_SendMessage(handler, "Offer Type", "Cource Name");
-			Adventus.adventus_EditApplication(handler, pdfStudentID);
+			Adventus.adventus_SendMessage(handler, offerType, courseTitle);
+			Adventus.adventus_EditApplication(handler, pdfStudentID,courseTitle,offerType);
+			Adventus.adventus_updateTask(handler,studentID,offerType);
 		}catch (Exception e){
 			 throw e;
 		}finally {
@@ -99,6 +102,23 @@ public class ProcessOne {
 
 
 		return offerType;
+
+
+
+	}
+
+	public void update(String x) {
+		x="B";
+	}
+
+
+	public static void main(String[] args) {
+		ProcessOne p1 = new ProcessOne();
+		String x = "A";
+		p1.update(x);
+		System.out.println(x);
+
+
 	}
 
 }
