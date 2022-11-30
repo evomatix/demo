@@ -109,7 +109,10 @@ public class Adventus {
                 if(isConfirmation){
                     handler.click(AdventusStudentStatus.btn_Confirmation);
                 }
+                handler.writeToReport("Offer Type is ["+offerType+"] task is updated");
             }
+        }else{
+            handler.writeToReport("Offer Type is ["+offerType+"] task will not be updated");
         }
     }
 
@@ -149,6 +152,10 @@ public class Adventus {
                 handler.select(AdventusApplication.select_OfferType,"Declined, with reason selected");
             }
 
+            handler.click(AdventusApplication.btn_Update);
+
+        }else{
+            handler.writeToReport("Offer dropdown is disabled, skipping the step");
         }
 
     }

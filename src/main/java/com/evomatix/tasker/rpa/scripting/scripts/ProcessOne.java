@@ -105,23 +105,6 @@ public class ProcessOne {
 
 
 		return offerType;
-
-
-
-	}
-
-	public void update(String x) {
-		x="B";
-	}
-
-
-	public static void main(String[] args) {
-		ProcessOne p1 = new ProcessOne();
-		String x = "A";
-		p1.update(x);
-		System.out.println(x);
-
-
 	}
 
 }
