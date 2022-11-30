@@ -1,1 +1,1 @@
-java  -cp "target/lib/*:target/classes"  com.evomatix.tasker.rpa.execution.executor
+sh build.sh && java  -cp "target/lib/*:target/classes"  com.evomatix.tasker.rpa.execution.executor
