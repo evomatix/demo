@@ -73,13 +73,16 @@ public class ProcessOne {
 		String courseTitle;
 		try{
 			courseTitle=Coventry.coventry_FindTheOffer(handler,studentName);
+			handler.writeToReport("Course Title :"+courseTitle);
 			pdfFile = Coventry.coventry_DownloadTheOffer(handler);
-			updatedPdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,handler.getConfiguration("ADVENTUS_OFFERTYPE"));
-			pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, updatedPdfFile);
-			handler.writeToReport("Extracted student ID :"+pdfStudentID);
-			offerType =Adventus.adventus_getOfferType(handler, updatedPdfFile);
-			courseTitle = Adventus.adventusGetCourseTitleFromPDF(handler,updatedPdfFile);
-			handler.writeToReport("Offer Type :"+offerType);
+			handler.writeToReport("PDF File :"+pdfFile);
+			pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, pdfFile);
+			handler.writeToReport("Student ID from PDF :"+pdfStudentID);
+			offerType =Adventus.adventus_getOfferType(handler, pdfFile);
+			handler.writeToReport("Offer Type from PDF :"+offerType);
+			updatedPdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,offerType);
+			handler.writeToReport("PDF File :"+updatedPdfFile);
+
 		}catch (Exception e){
 		//	Utils.switchBackToBaseWindow(handler,currentWindow);
 			 throw e;
