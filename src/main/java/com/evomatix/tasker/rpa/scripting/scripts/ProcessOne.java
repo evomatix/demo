@@ -1,9 +1,11 @@
 package com.evomatix.tasker.rpa.scripting.scripts;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.framework.fileops.ExcelManager;
 import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.rpa.scripting.bc.*;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.hc.core5.http.nio.AsyncResponseConsumer;
 
 import java.util.List;
@@ -17,32 +19,38 @@ public class ProcessOne {
 		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Data");
 		List<Map<String, Object>> data = excelDataSource.readExcel();
 		int rowNumber =0;
+		int executedRecords = 0;
 
 		for (Map<String, Object> row : data) {
 			rowNumber++;
 			try {
 
 				//1st check
-				if(String.valueOf(row.get("Insto Name")).equals(handler.getConfiguration("UNIVERSITY_NAME"))
-						&& (row.get("Checked Date")==null || String.valueOf(row.get("Checked Date")).trim().equals(""))){
+				if(Utils.isEligible(handler,row)){
+					executedRecords++;
 					String outcome =ProcessOne.coventryProcess(handler,row, String.valueOf(row.get("Student ID")).split("\\.")[0]);
 					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
 
-			} catch (Exception e) {
-				if(e.getMessage().startsWith("MSG:")){
-					ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Multiple Applications Found");
-				}else{
-					ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Offer Not Found");
-				}
-				e.printStackTrace();
-
+			} catch (ExecutionInterruptedException e) {
+				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,e.type);
 				handler.log(LogType.FAIL,"FAIL",e.getMessage());
+				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
+			} catch (Exception e){
+				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Failed - Refer Execution Report");
+				handler.log(LogType.FAIL,"FAIL",e.getMessage());
+				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
 			}
 		}
 
-		Adventus.adventus_Logout(handler);
-		Coventry.coventry_Logout(handler);
+	if(executedRecords>0){
+		try {
+			Adventus.adventus_Logout(handler);
+			Coventry.coventry_Logout(handler);
+		}catch (Exception e){
+			handler.writeToReport("Final logout is not Successful");
+		}
+	}
 
 	}
 
@@ -60,13 +68,14 @@ public class ProcessOne {
 			studentName = Adventus.adventus_GetStudentName(handler,studentID);
 			handler.writeToReport("Student Name : "+studentName);
 		}catch (Exception e){
-			 throw new RuntimeException("Unable to retrieve student name form",e);
+
+			 throw new ExecutionInterruptedException("Unable to retrieve student name form Adventus portal","Failed - Unable to get Adventus Student Name ",e);
 		}
 
 
 		//step 02
 		Coventry.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"),handler.getConfiguration("COVENTRY_PASSWORD"));
-		String pdfFile=null;
+		String pdfFile = null;
 		String updatedPdfFile;
 		String pdfStudentID;
 		String offerType;
@@ -83,9 +92,10 @@ public class ProcessOne {
 			updatedPdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,offerType);
 			handler.writeToReport("PDF File :"+updatedPdfFile);
 
+		}catch (ExecutionInterruptedException e){
+			throw e;
 		}catch (Exception e){
-		//	Utils.switchBackToBaseWindow(handler,currentWindow);
-			 throw e;
+			throw new ExecutionInterruptedException(e.getMessage(),"Failed - Refer Execution Report",e);
 		}finally {
 			Utils.cleanupFile(handler,pdfFile);
 		}
@@ -97,8 +107,10 @@ public class ProcessOne {
 			Adventus.adventus_SendMessage(handler, offerType, courseTitle);
 			Adventus.adventus_EditApplication(handler, pdfStudentID,courseTitle,offerType);
 			Adventus.adventus_updateTask(handler,studentID,offerType);
+		}catch (ExecutionInterruptedException e){
+			throw e;
 		}catch (Exception e){
-			 throw e;
+			throw new ExecutionInterruptedException(e.getMessage(),"Failed - Refer Execution Report",e);
 		}finally {
 			Utils.cleanupFile(handler,updatedPdfFile);
 		}

@@ -1,6 +1,7 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryApplication;
 import com.evomatix.tasker.rpa.scripting.pages.CoventryLogin;
 
@@ -22,7 +23,7 @@ public class Coventry {
                 handler.pause(15000);
                 isHomePage = handler.checkElementPresent(CoventryApplication.lnk_UserName);
                 if(!isHomePage){
-                    throw new RuntimeException("Unable to login to Coventry portal");
+                    throw new ExecutionInterruptedException("Unable to login to Coventry portal","Failed - Unable to login to Coventry");
                 }
             }
         }
@@ -39,13 +40,13 @@ public class Coventry {
         boolean isStudentFound= handler.checkElementPresent(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
 
         if(!isStudentFound){
-            throw new RuntimeException("Student not found in Coventry portal");
+            throw new ExecutionInterruptedException("Student not found in Coventry portal", "Failed - Student not found in Coventry");
         }
         int count =  handler.getElementCount(CoventryApplication.lnk_StudentNames, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
         handler.writeToReport(" Applications count ["+count+"] in Coventry Portal");
         if(count>1){
             handler.writeToReport("Multiple Applications ("+count+") are found in Coventry Portal");
-            throw new RuntimeException("MSG: Multiple Applications Found");
+            throw new ExecutionInterruptedException("Multiple Applications Found in coventry portal","Failed - Multiple Applications Found");
         }
         handler.click(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
         String application= handler.getText(CoventryApplication.lnk_StudentName, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
@@ -61,7 +62,7 @@ public class Coventry {
         try{
             handler.click(CoventryApplication.btn_DownloadTheOffer);
         }catch (Exception e){
-            throw new RuntimeException("Offer not found in Coventry portal",e);
+            throw new ExecutionInterruptedException("Offer not found in Coventry portal","Offer Not Found");
         }
 
 

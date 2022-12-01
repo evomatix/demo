@@ -2,6 +2,7 @@ package com.evomatix.tasker.rpa.scripting.bc;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.fileops.SimplePDFReader;
+import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.rpa.scripting.pages.*;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class Adventus {
                 isHomePage = handler.checkElementPresent( AdventusLogin.btn_AccountCircle);
 
                 if(!isHomePage){
-                    throw new RuntimeException("Unable to Login to Adventus Portal");
+                    throw new ExecutionInterruptedException("Unable to Login to Adventus Portal","Failed - Unable to log into Adventus");
                 }
             }
 
@@ -134,7 +135,7 @@ public class Adventus {
             if(isFound){
                 handler.click(AdventusApplication.btn_EditWithCourse, Map.of("title", courseTitle));
             }else{
-                throw new RuntimeException("Unable to Find relevant application for course ["+courseTitle+"] among ["+rows+"] Applications");
+                throw new ExecutionInterruptedException("Unable to Find relevant application for course ["+courseTitle+"] among ["+rows+"] Applications","Unable to map offer to course");
             }
 
         }
@@ -174,30 +175,13 @@ public class Adventus {
             }
         }
         if (studentID == null) {
-            handler.fail("Student id not Found in the downloaded PDF");
+            throw new ExecutionInterruptedException("Student id not Found in the downloaded PDF","Failed - Student ID Not Found in PDF");
         }
 
         return studentID;
     }
 
 
-    public static String adventusGetCourseTitleFromPDF(ExecutionHandler handler, String pdfFile) {
-
-        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
-        List<String> lines = reader.extractLineContent(pdfFile);
-        String courseTitle = null;
-        for (String line : lines) {
-            if (line.contains("Course Title")) {
-                courseTitle = line.replace("Course Title","").trim();
-                break;
-            }
-        }
-        if (courseTitle == null) {
-            handler.fail("Course Title not Found in the downloaded PDF");
-        }
-
-        return courseTitle;
-    }
 
 
     public static String adventus_RenameDownloadedFile(ExecutionHandler handler, String filePath, String prefix) {
@@ -206,7 +190,7 @@ public class Adventus {
         File updatedFile = new File(file.getParentFile().getAbsolutePath()+File.separator+prefix+"_"+file.getName());
         boolean success = file.renameTo(updatedFile);
         if (!success) {
-            throw new RuntimeException("FAILED to rename "+file.getName());
+            throw new ExecutionInterruptedException("FAILED to rename downloaded pdf "+file.getName(),"Failed - Unable to Rename PDF File");
         } else {
             System.out.println(updatedFile.getAbsolutePath());
             return updatedFile.getAbsolutePath();
@@ -236,7 +220,7 @@ public class Adventus {
             }
         }
         if (offerType == null) {
-            handler.fail("Student id not Found in the downloaded PDF");
+            throw new ExecutionInterruptedException("Student id not Found in the downloaded PDF","Failed - Offer Type not found in PDF");
         }
 
         return offerType;
