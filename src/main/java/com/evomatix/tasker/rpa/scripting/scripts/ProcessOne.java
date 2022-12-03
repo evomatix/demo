@@ -66,6 +66,7 @@ public class ProcessOne {
 		try{
 			Adventus.adventus_SearchStudent(handler,studentID);
 			studentName = Adventus.adventus_GetStudentName(handler,studentID);
+			studentName=studentName.replace(".","").replace("\\.","").replace("-","").replace("_","").trim();
 			handler.writeToReport("Student Name : "+studentName);
 		}catch (Exception e){
 
@@ -118,5 +119,6 @@ public class ProcessOne {
 
 		return offerType;
 	}
+
 
 }
