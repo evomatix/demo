@@ -28,7 +28,7 @@ public class ProcessOne {
 				//1st check
 				if(Utils.isEligible(handler,row)){
 					executedRecords++;
-					String outcome =ProcessOne.coventryProcess(handler,row, String.valueOf(row.get("Student ID")).split("\\.")[0]);
+					String outcome =ProcessOne.coventryProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")), String.valueOf(row.get("App ID")).split("\\.")[0]);
 					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
 
@@ -56,7 +56,7 @@ public class ProcessOne {
 
 
 
-	public static String coventryProcess(ExecutionHandler handler, Map<String, Object> row, String studentID){
+	public static String coventryProcess(ExecutionHandler handler, String studentID, String courseName, String appID){
 
 		handler.reporter.startProcess("Student : "+studentID);
 
@@ -80,10 +80,9 @@ public class ProcessOne {
 		String updatedPdfFile;
 		String pdfStudentID;
 		String offerType;
-		String courseTitle;
 		try{
-			courseTitle=Coventry.coventry_FindTheOffer(handler,studentName);
-			handler.writeToReport("Course Title :"+courseTitle);
+			handler.writeToReport("Course Title :"+courseName);
+			Coventry.coventry_FindTheOffer(handler,studentName,courseName,appID);
 			pdfFile = Coventry.coventry_DownloadTheOffer(handler);
 			handler.writeToReport("PDF File :"+pdfFile);
 			pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, pdfFile);
@@ -105,8 +104,8 @@ public class ProcessOne {
 		Adventus.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		try{
 			Adventus.adventus_UploadOfferLetter(handler, studentID, studentName,offerType, updatedPdfFile);
-			Adventus.adventus_SendMessage(handler, offerType, courseTitle);
-			Adventus.adventus_EditApplication(handler, pdfStudentID,courseTitle,offerType);
+			Adventus.adventus_SendMessage(handler, offerType, courseName);
+			Adventus.adventus_EditApplication(handler, pdfStudentID,courseName,offerType);
 			Adventus.adventus_updateTask(handler,studentID,offerType);
 		}catch (ExecutionInterruptedException e){
 			throw e;

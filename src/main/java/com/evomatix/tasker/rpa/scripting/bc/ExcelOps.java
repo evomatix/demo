@@ -11,17 +11,17 @@ public class ExcelOps {
 
     public static void updateExcelError(ExecutionHandler handler, ExcelManager excelDataSource, int row, String error){
         Calendar c= Calendar.getInstance();
-        excelDataSource.writeExcel(row,12,handler.getConfiguration("OFFICER_NAME"));
-        excelDataSource.writeExcel(row,13,ExcelOps.getToday());
-        excelDataSource.writeExcel(row,14,error);
-        excelDataSource.writeExcel(row,16,ExcelOps.getNextWorkingDay(3));
+        excelDataSource.writeExcel(row,13,handler.getConfiguration("OFFICER_NAME"));
+        excelDataSource.writeExcel(row,14,ExcelOps.getToday());
+        excelDataSource.writeExcel(row,15,error);
+        excelDataSource.writeExcel(row,17,ExcelOps.getNextWorkingDay(3));
     }
 
 
     public static void updateExcelOutcome(ExecutionHandler handler,ExcelManager excelDataSource, int row, String outcome){
-        excelDataSource.writeExcel(row,12,handler.getConfiguration("OFFICER_NAME"));
-        excelDataSource.writeExcel(row,13,ExcelOps.getToday());
-        excelDataSource.writeExcel(row,14,outcome);
+        excelDataSource.writeExcel(row,13,handler.getConfiguration("OFFICER_NAME"));
+        excelDataSource.writeExcel(row,14,ExcelOps.getToday());
+        excelDataSource.writeExcel(row,15,outcome);
     }
 
 

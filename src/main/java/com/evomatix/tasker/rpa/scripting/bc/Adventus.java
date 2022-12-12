@@ -122,23 +122,21 @@ public class Adventus {
     public static void adventus_EditApplication(ExecutionHandler handler, String studentID, String courseTitle, String offerType) {
         handler.click(AdventusStudentStatus.lnk_Application);
         //wait till the element is loaded
-        handler.checkElementPresent(AdventusApplication.btn_Edit);
+        boolean appsAvailable=handler.checkElementPresent(AdventusApplication.btn_Edit);
 
-        //counting number of rows
-        int rows = handler.getElementCount(AdventusApplication.btn_Edit);
-        handler.writeToReport("["+rows+"] Number of Applications found in Adventus portal");
-        if(rows==1){
-            handler.click(AdventusApplication.btn_Edit);
+        if(!appsAvailable){
+            throw new ExecutionInterruptedException("No Applications are listed for the student ["+studentID+"] in Advantus portal","Failed - Unable to map offer to course");
         }else{
             handler.writeToReport("Checking for a Application with course title ["+courseTitle+"]");
             boolean isFound= handler.checkElementPresent(AdventusApplication.btn_EditWithCourse,Map.of("title", courseTitle));
             if(isFound){
                 handler.click(AdventusApplication.btn_EditWithCourse, Map.of("title", courseTitle));
             }else{
-                throw new ExecutionInterruptedException("Unable to Find relevant application for course ["+courseTitle+"] among ["+rows+"] Applications","Unable to map offer to course");
+                throw new ExecutionInterruptedException("Unable to Find relevant application for course ["+courseTitle+"] among available applications in advantus","Failed - Unable to map offer to course");
             }
 
         }
+
         handler.click(AdventusApplication.btn_EditInstitutionStudentId);
         handler.type(AdventusApplication.txt_InstitutionStudentId, studentID);
         handler.click(AdventusApplication.btn_EditInstitutionStudentId);
