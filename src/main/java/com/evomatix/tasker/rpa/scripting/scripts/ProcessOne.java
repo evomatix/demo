@@ -68,6 +68,7 @@ public class ProcessOne {
 			studentName = Adventus.adventus_GetStudentName(handler,studentID);
 			studentName=studentName.replace(".","").replace("\\.","").replace("-","").replace("_","").trim();
 			handler.writeToReport("Student Name : "+studentName);
+			handler.writeToReport("App ID :"+appID);
 		}catch (Exception e){
 
 			 throw new ExecutionInterruptedException("Unable to retrieve student name form Adventus portal","Failed - Unable to get Adventus Student Name ",e);
@@ -82,6 +83,7 @@ public class ProcessOne {
 		String offerType;
 		try{
 			handler.writeToReport("Course Title :"+courseName);
+
 			Coventry.coventry_FindTheOffer(handler,studentName,courseName,appID);
 			pdfFile = Coventry.coventry_DownloadTheOffer(handler);
 			handler.writeToReport("PDF File :"+pdfFile);
