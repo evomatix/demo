@@ -61,6 +61,9 @@ public class Coventry {
 
         if(!isStudentFoundWithID){
 
+            //waiting until loads
+            handler.checkElementPresent(CoventryApplication.lnk_StudentNames, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
+
             int count =  handler.getElementCount(CoventryApplication.lnk_StudentNames, Map.of("idf_StudentName_Upper", studentName.toUpperCase(),"idf_StudentName_Camel", Utils.convertToTitleCaseIteratingChars(studentName),"idf_StudentName_Lower",studentName.toLowerCase()));
             handler.writeToReport("No of Applications found in Coventry Portal : ["+count+"]");
 
