@@ -1,7 +1,9 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 
+import java.io.File;
 import java.util.Map;
 
 public class Utils {
@@ -64,6 +66,21 @@ public class Utils {
 
 
 
+    }
+
+
+
+    public static String addPrefixToFileName(ExecutionHandler handler, String filePath, String prefix) {
+
+        File file = new File(filePath);
+        File updatedFile = new File(file.getParentFile().getAbsolutePath()+File.separator+prefix+"_"+file.getName());
+        boolean success = file.renameTo(updatedFile);
+        if (!success) {
+            throw new ExecutionInterruptedException("FAILED to rename downloaded pdf "+file.getName(),"Failed - Unable to Rename PDF File");
+        } else {
+            System.out.println(updatedFile.getAbsolutePath());
+            return updatedFile.getAbsolutePath();
+        }
     }
 
 

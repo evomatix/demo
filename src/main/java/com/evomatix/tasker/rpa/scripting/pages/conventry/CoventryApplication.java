@@ -1,4 +1,4 @@
-package com.evomatix.tasker.rpa.scripting.pages;
+package com.evomatix.tasker.rpa.scripting.pages.conventry;
 
 import com.evomatix.tasker.framework.locator.LocatorType;
 import com.evomatix.tasker.framework.locator.ObjectLocator;

@@ -3,11 +3,10 @@ package com.evomatix.tasker.rpa.scripting.bc;
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.framework.locator.ObjectLocator;
-import com.evomatix.tasker.rpa.scripting.pages.CoventryApplication;
-import com.evomatix.tasker.rpa.scripting.pages.CoventryLogin;
+import com.evomatix.tasker.rpa.scripting.pages.conventry.CoventryApplication;
+import com.evomatix.tasker.rpa.scripting.pages.conventry.CoventryLogin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

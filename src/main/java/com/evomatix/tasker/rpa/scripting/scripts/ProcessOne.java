@@ -6,7 +6,6 @@ import com.evomatix.tasker.framework.fileops.ExcelManager;
 import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.rpa.scripting.bc.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.hc.core5.http.nio.AsyncResponseConsumer;
 
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class ProcessOne {
 
 	if(executedRecords>0){
 		try {
-			Adventus.adventus_Logout(handler);
+			Adventus.logout(handler);
 			Coventry.coventry_Logout(handler);
 		}catch (Exception e){
 			handler.writeToReport("Final logout is not Successful");
@@ -61,11 +60,11 @@ public class ProcessOne {
 		handler.reporter.startProcess("Student : "+studentID);
 
 		//step 01
-		Adventus.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
+		Adventus.login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		String studentName;
 		try{
-			Adventus.adventus_SearchStudent(handler,studentID);
-			studentName = Adventus.adventus_GetStudentName(handler,studentID);
+			Adventus.searchStudent(handler,studentID);
+			studentName = Adventus.getStudentName(handler,studentID);
 			studentName=studentName.replace(".","").replace("\\.","").replace("-","").replace("_","").trim();
 			handler.writeToReport("Student Name : "+studentName);
 			handler.writeToReport("App ID :"+appID);
@@ -103,12 +102,12 @@ public class ProcessOne {
 		}
 
 		//step 03
-		Adventus.adventus_Login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
+		Adventus.login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
 		try{
-			Adventus.adventus_UploadOfferLetter(handler, studentID, studentName,offerType, updatedPdfFile);
-			Adventus.adventus_SendMessage(handler, offerType, courseName);
-			Adventus.adventus_EditApplication(handler, pdfStudentID,courseName,offerType);
-			Adventus.adventus_updateTask(handler,studentID,offerType);
+			Adventus.uploadOfferLetter(handler, studentID, studentName,offerType, updatedPdfFile);
+			Adventus.sendMessage(handler, offerType, courseName);
+			Adventus.editApplication(handler, pdfStudentID,courseName,offerType);
+			Adventus.updateTask(handler,studentID,offerType);
 		}catch (ExecutionInterruptedException e){
 			throw e;
 		}catch (Exception e){
