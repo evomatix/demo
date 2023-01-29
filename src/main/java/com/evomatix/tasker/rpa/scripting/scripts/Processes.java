@@ -73,7 +73,7 @@ public class Processes {
 				//1st check
 				if(Utils.isEligible(handler,row)){
 					executedRecords++;
-					String outcome = GreenwichProcess.GreenwichProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name"));
+					String outcome = GreenwichProcess.GreenwichProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")));
 					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
 
