@@ -1,7 +1,7 @@
 package com.evomatix.tasker.rpa.execution.plan;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
-import com.evomatix.tasker.rpa.scripting.scripts.ProcessOne;
+import com.evomatix.tasker.rpa.scripting.scripts.Processes;
 
 public class Plan {
 
@@ -11,11 +11,8 @@ public class Plan {
        try(ExecutionHandler handler = new ExecutionHandler()){
            //Call your scripts here
 
-           ProcessOne.partOne(handler);
-
-
-
-
+           Processes.coventryOfferCheck(handler);
+           Processes.greenwichOfferCheck(handler);
 
        }catch (Exception e){
            e.printStackTrace();
