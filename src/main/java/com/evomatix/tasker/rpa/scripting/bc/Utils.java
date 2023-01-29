@@ -56,13 +56,10 @@ public class Utils {
 
         //fields
         String uniName = String.valueOf(row.get("Insto Name"));
-        String uniConfig =  handler.getConfiguration("UNIVERSITY_NAME");
         Object checkDate = row.get("Checked Date")==null? "": String.valueOf(row.get("Checked Date")).trim();
-
-
         //condition
         //check the [uni name] is equals to the [uni filter] configuration and the check date is empty
-        return (uniName.equals(uniConfig) && checkDate.equals(""));
+        return (checkDate.equals(""));
 
 
 

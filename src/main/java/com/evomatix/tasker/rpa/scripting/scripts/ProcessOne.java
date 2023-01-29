@@ -5,6 +5,7 @@ import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.framework.fileops.ExcelManager;
 import com.evomatix.tasker.framework.reporting.LogType;
 import com.evomatix.tasker.rpa.scripting.bc.*;
+import com.evomatix.tasker.rpa.scripting.scripts.processes.GreenwichProcess;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.List;
@@ -27,7 +28,15 @@ public class ProcessOne {
 				//1st check
 				if(Utils.isEligible(handler,row)){
 					executedRecords++;
-					String outcome =ProcessOne.coventryProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")), String.valueOf(row.get("App ID")).split("\\.")[0]);
+					String outcome="";
+					String uniConfig =  handler.getConfiguration("UNIVERSITY_NAME");
+					if(uniConfig.equals("Coventry University")){
+						 outcome =ProcessOne.coventryProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")), String.valueOf(row.get("App ID")).split("\\.")[0]);
+
+					}else if(uniConfig.equals("University of Greenwich")){
+						outcome = GreenwichProcess.GreenwichProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")));
+
+					}
 					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
 
