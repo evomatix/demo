@@ -22,6 +22,4 @@ public class GreenwichApplicantSearch extends Page {
     public static ObjectLocator txt_Status = new ObjectLocator("txt_Status","//th/a[contains(text(),'Status')]/../../../../tbody/tr/td/a", LocatorType.XPATH);
 
 
-    //th[contains(text(),'Comment')]/../../../tbody/tr[1]/td[1]
-
 }

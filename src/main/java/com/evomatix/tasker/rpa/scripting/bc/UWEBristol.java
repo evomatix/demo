@@ -2,15 +2,19 @@ package com.evomatix.tasker.rpa.scripting.bc;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
+import com.evomatix.tasker.rpa.scripting.domain.UniversityOffer;
 import com.evomatix.tasker.rpa.scripting.pages.conventry.CoventryLogin;
+import com.evomatix.tasker.rpa.scripting.pages.greenwitch.GreenwichApplicationView;
 import com.evomatix.tasker.rpa.scripting.pages.uwebristol.UWEBristolApplicantSearch;
+import com.evomatix.tasker.rpa.scripting.pages.uwebristol.UWEBristolApplicantView;
 import com.evomatix.tasker.rpa.scripting.pages.uwebristol.UWEBristolLogin;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class UWEBristol {
 
-    public static void UWEBristol_Login(ExecutionHandler handler, String userName, String password) {
+    public static void login(ExecutionHandler handler, String userName, String password) {
         handler.open(new CoventryLogin().getUrl(), 3000);
 
         boolean isHomePage = handler.checkElementPresent(UWEBristolLogin.btn_AccountCircle,5);
@@ -30,7 +34,7 @@ public class UWEBristol {
         }
     }
 
-    public static void coventry_Logout(ExecutionHandler handler) {
+    public static void logout(ExecutionHandler handler) {
         handler.open(new UWEBristolLogin().getUrl(), 3000);
         handler.click(UWEBristolLogin.btn_AccountCircle);
         handler.click(UWEBristolLogin.btn_Logout);
@@ -38,7 +42,7 @@ public class UWEBristol {
 
     }
 
-    public static void search_Student(ExecutionHandler handler,String institutionApplicationID){
+    public static void searchStudent(ExecutionHandler handler,String institutionApplicationID){
         handler.click(UWEBristolApplicantSearch.lnk_ReviewApplication);
         handler.type(UWEBristolApplicantSearch.txt_Applicant_Number,institutionApplicationID);
         handler.click(UWEBristolApplicantSearch.btn_Search);
@@ -48,20 +52,70 @@ public class UWEBristol {
             throw new ExecutionInterruptedException("Unable to find student record in UWE Bristol portal","Student Not Found");
         }
 
-        handler.click(UWEBristolApplicantSearch.tr_SearchResultViewEdit,Map.of("idf_applicationID", institutionApplicationID));
 
 
     }
 
-    public static void processApplication(ExecutionHandler handler){
+    public static UniversityOffer processApplication(ExecutionHandler handler, String institutionApplicationID){
 
-        String decision = handler.getText(UWEBristolApplicantSearch.txt_Decision).trim();
+        UniversityOffer offer = new UniversityOffer();
 
-        if(decision.equals("")){
-            throw new ExecutionInterruptedException("Unable to find a decision for student in UWE Bristol portal","CANNOT LOCATE A DECISION");
+        handler.click(UWEBristolApplicantSearch.tr_SearchResultViewEdit,Map.of("idf_applicationID", institutionApplicationID));
+
+        String decision = handler.getText(UWEBristolApplicantSearch.txt_Decision).trim().toLowerCase();
+
+        offer.setDecision(decision);
+
+        String pdf=null;
+
+        if(decision.equals("reject")){
+            pdf= UWEBristol.downloadTheOffer( handler,"Emails","Reject Email With Feedback");
+
+        }else if(decision.equals("conditional")||decision.equals("conditional firm accept")){
+            pdf =UWEBristol.downloadTheOffer( handler,"Letters","International Conditional Offer");
+
+        }else if(decision.equals("conditional firm accept unconditional firm accept")||decision.equals("unconditional firm accept")){
+            pdf =UWEBristol.downloadTheOffer( handler,"Letters","International Unconditional Offer");
+
+        }else if(decision.equals("Further Info Request") ){
+            pdf = "";
+        } else{
+            throw new ExecutionInterruptedException("Student found but, Unable to find a decision for student in UWE Bristol portal","Failed - Cannot Locate a Decision");
+
         }
 
+        offer.setPdfPath(pdf);
+
+        return offer;
 
 
+
+    }
+
+
+    private static String downloadTheOffer(ExecutionHandler handler,String title, String entry) {
+
+        String currentWindow = handler.getCurrentWindowTitle();
+
+        String pdfFilePath=null;
+
+        try {
+            boolean linkFound = handler.checkElementPresent(UWEBristolApplicantView.lnk_AccordionEntry, Map.of("title", title, "entry", entry), 2);
+            if (linkFound) {
+
+                handler.switchToNewlyOpenedTab();
+                handler.exportPageAsPDF("");
+
+            } else {
+                throw new ExecutionInterruptedException("Student found but, Unable locate " + title + " with " + entry, "Failed - No " + title + " Found With Expected Title");
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            handler.closeCurrentTab();
+            handler.switchToWindowByTitle(currentWindow);
+        }
+
+        return pdfFilePath;
     }
 }

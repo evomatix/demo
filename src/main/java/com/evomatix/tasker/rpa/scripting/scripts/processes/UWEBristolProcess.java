@@ -3,26 +3,35 @@ package com.evomatix.tasker.rpa.scripting.scripts.processes;
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.rpa.scripting.bc.Adventus;
-import com.evomatix.tasker.rpa.scripting.bc.Coventry;
+import com.evomatix.tasker.rpa.scripting.bc.Greenwich;
+import com.evomatix.tasker.rpa.scripting.bc.UWEBristol;
 import com.evomatix.tasker.rpa.scripting.bc.Utils;
+import com.evomatix.tasker.rpa.scripting.domain.UniversityOffer;
+import com.evomatix.tasker.rpa.scripting.mappings.GreenwichMappings;
+import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusApplication;
 import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusStudentStatus;
 
-public class UWEBristol {
+public class UWEBristolProcess {
 
-    public static String UWEBristolProcess(ExecutionHandler handler, String studentID, String courseName, String appID){
+    public static String UWEBristolProcess(ExecutionHandler handler, String studentID, String courseName){
 
         handler.reporter.startProcess("Student : "+studentID);
 
         //step 01
         Adventus.login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
         String studentName;
+        String appID=null;
         try{
             Adventus.searchStudent(handler,studentID);
             studentName = Adventus.getStudentName(handler,studentID);
             studentName=studentName.replace(".","").replace("\\.","").replace("-","").replace("_","").trim();
             handler.writeToReport("Student Name : "+studentName);
-            handler.writeToReport("App ID :"+appID);
+
+            handler.writeToReport("Course Title :"+courseName);
             handler.click(AdventusStudentStatus.lnk_Application);
+            Adventus.viewApplication(handler, studentID, courseName);
+            appID=handler.getText(AdventusApplication.txt_InstitutionStudentId);
+            handler.writeToReport("App ID :"+appID);
         }catch (Exception e){
 
             throw new ExecutionInterruptedException("Unable to retrieve student name form Adventus portal","Failed - Unable to get Adventus Student Name ",e);
@@ -30,50 +39,59 @@ public class UWEBristol {
 
 
         //step 02
-        Coventry.coventry_Login(handler, handler.getConfiguration("COVENTRY_USERNAME"),handler.getConfiguration("COVENTRY_PASSWORD"));
-        String pdfFile = null;
-        String updatedPdfFile;
-        String pdfStudentID;
-        String offerType;
+        UWEBristol.login(handler, handler.getConfiguration("BRISTOL_USERNAME"),handler.getConfiguration("BRISTOL_PASSWORD"));
+        UniversityOffer offer= new UniversityOffer();
+        String offerType=null;
         try{
-            handler.writeToReport("Course Title :"+courseName);
 
-            Coventry.coventry_FindTheOffer(handler,studentName,courseName,appID);
-            pdfFile = Coventry.coventry_DownloadTheOffer(handler);
-            handler.writeToReport("PDF File :"+pdfFile);
-            pdfStudentID = Adventus.adventus_getStudentIDFromPDF(handler, pdfFile);
-            handler.writeToReport("Student ID from PDF :"+pdfStudentID);
-            offerType =Adventus.adventus_getOfferType(handler, pdfFile);
-            handler.writeToReport("Offer Type from PDF :"+offerType);
-            updatedPdfFile=Adventus.adventus_RenameDownloadedFile(handler,pdfFile,offerType);
-            handler.writeToReport("PDF File :"+updatedPdfFile);
+            UWEBristol.searchStudent(handler,appID);
+            offer = UWEBristol.processApplication(handler,appID);
+
+            handler.writeToReport("PDF File :"+offer.getPdfPath());
 
         }catch (ExecutionInterruptedException e){
             throw e;
         }catch (Exception e){
             throw new ExecutionInterruptedException(e.getMessage(),"Failed - Refer Execution Report",e);
         }finally {
-            Utils.cleanupFile(handler,pdfFile);
+            Utils.cleanupFile(handler,offer.getPdfPath());
         }
 
         //step 03
         Adventus.login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
         try{
-            Adventus.uploadOfferLetter(handler, studentID, studentName,offerType, updatedPdfFile);
-            Adventus.sendMessage(handler, offerType, courseName);
-            Adventus.editApplication(handler, pdfStudentID,courseName,offerType);
+            offerType = GreenwichMappings.getAdventusDocumentMapping(offer.getDecision());
+            if(offerType!=null){
+                Adventus.uploadOfferLetter(handler, studentID, studentName,offerType, offer.getUpdatedPDFPath());
+            }
+
+            Adventus.editApplication(handler, null,courseName,offerType);
+
+            String message = GreenwichMappings.getAdventusMessageMapping(offer.getDecision());
+            if(message!=null){
+                message.replace("$University","University of UWE Bristol");
+                message.replace("$Course",courseName);
+                Adventus.sendMessage(handler, message);
+            }
             Adventus.updateTask(handler,studentID,offerType);
+
+
+
         }catch (ExecutionInterruptedException e){
             throw e;
         }catch (Exception e){
             throw new ExecutionInterruptedException(e.getMessage(),"Failed - Refer Execution Report",e);
         }finally {
-            Utils.cleanupFile(handler,updatedPdfFile);
+            Utils.cleanupFile(handler,offer.getUpdatedPDFPath());
         }
+
 
 
         return offerType;
     }
+
+
+
 
 
 }

@@ -7,7 +7,7 @@ import com.evomatix.tasker.framework.model.Page;
 public class GreenwichApplicationView  extends Page {
 
     public GreenwichApplicationView(){
-        this.setUrl("https://greenwichapplications.gre.ac.uk/search/record");
+        this.setUrl("https://greenwichapplications.gre.ac.uk/");
     }
 
     public static ObjectLocator btn_DownloadOffer = new ObjectLocator("btn_DownloadOffer","//input[@id='edit-print-offet-letter-link']", LocatorType.XPATH);
