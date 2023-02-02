@@ -15,23 +15,18 @@ import java.util.Map;
 public class UWEBristol {
 
     public static void login(ExecutionHandler handler, String userName, String password) {
-        handler.open(new UWEBristolLogin().getUrl(), 3000);
+        handler.open(new UWEBristolLogin().getUrl(), 1000);
 
-        boolean isHomePage = handler.checkElementPresent(UWEBristolLogin.btn_AccountCircle,5);
-        if(!isHomePage){
-            boolean isLoginPage = handler.checkElementPresent(UWEBristolLogin.txt_UserID,2);
+            boolean isLoginPage = handler.checkElementPresent(UWEBristolLogin.txt_UserID);
             if(isLoginPage){
                 handler.type(UWEBristolLogin.txt_UserID, userName);
                 handler.type(UWEBristolLogin.txt_Password, password);
-                handler.pause(2000);
                 handler.click(UWEBristolLogin.btn_Login);
-                handler.pause(15000);
-                isHomePage = handler.checkElementPresent(UWEBristolLogin.btn_AccountCircle);
+                boolean  isHomePage = handler.checkElementPresent(UWEBristolLogin.btn_AccountCircle);
                 if(!isHomePage){
                     throw new ExecutionInterruptedException("Unable to login to UWE Bristol portal","Failed - Unable to login to UWE Bristol");
                 }
             }
-        }
     }
 
     public static void logout(ExecutionHandler handler) {
