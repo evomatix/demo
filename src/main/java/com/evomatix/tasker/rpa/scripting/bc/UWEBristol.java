@@ -103,6 +103,7 @@ public class UWEBristol {
                 handler.switchToNewlyOpenedTab();
                 String fileName=(offer+"_"+student+"_"+entry).replace(" ","_");
                 pdfFilePath =handler.exportPageAsPDF(handler.getConfiguration("DOWNLOAD_PATH"),fileName);
+                handler.pause(2000);
 
 
             } else {
