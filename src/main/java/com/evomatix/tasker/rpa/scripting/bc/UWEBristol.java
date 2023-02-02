@@ -15,7 +15,7 @@ import java.util.Map;
 public class UWEBristol {
 
     public static void login(ExecutionHandler handler, String userName, String password) {
-        handler.open(new CoventryLogin().getUrl(), 3000);
+        handler.open(new UWEBristolLogin().getUrl(), 3000);
 
         boolean isHomePage = handler.checkElementPresent(UWEBristolLogin.btn_AccountCircle,5);
         if(!isHomePage){
@@ -100,11 +100,13 @@ public class UWEBristol {
         String pdfFilePath=null;
 
         try {
-            boolean linkFound = handler.checkElementPresent(UWEBristolApplicantView.lnk_AccordionEntry, Map.of("title", title, "entry", entry), 2);
+            handler.click(UWEBristolApplicantView.lnk_AccordionEntry,Map.of("title", title));
+            boolean linkFound = handler.checkElementPresent(UWEBristolApplicantView.lnk_AccordionEntryContent, Map.of("title", title, "entry", entry), 5);
             if (linkFound) {
 
+                handler.click(UWEBristolApplicantView.lnk_AccordionEntryContent, Map.of("title", title, "entry", entry));
                 handler.switchToNewlyOpenedTab();
-                handler.exportPageAsPDF("");
+                handler.exportPageAsPDF("/Users/vdhhewapathirana/Storage/Projects/evomatix/out/output.pdf");
 
             } else {
                 throw new ExecutionInterruptedException("Student found but, Unable locate " + title + " with " + entry, "Failed - No " + title + " Found With Expected Title");

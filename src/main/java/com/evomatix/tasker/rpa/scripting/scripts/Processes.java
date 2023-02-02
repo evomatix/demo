@@ -116,7 +116,8 @@ public class Processes {
 				//1st check
 				if(Utils.isEligible(handler,row)){
 					executedRecords++;
-					String outcome = UWEBristolProcess.UWEBristolProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")));
+					boolean isPK = String.valueOf(row.get("Region")).trim().toLowerCase().equals("pakistan")?true:false;
+					String outcome = UWEBristolProcess.UWEBristolProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")),isPK);
 					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
 				}
 

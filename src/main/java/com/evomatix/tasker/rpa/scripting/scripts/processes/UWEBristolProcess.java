@@ -13,7 +13,7 @@ import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusStudentStatus;
 
 public class UWEBristolProcess {
 
-    public static String UWEBristolProcess(ExecutionHandler handler, String studentID, String courseName){
+    public static String UWEBristolProcess(ExecutionHandler handler, String studentID, String courseName,boolean isPK){
 
         handler.reporter.startProcess("Student : "+studentID);
 
@@ -30,16 +30,22 @@ public class UWEBristolProcess {
             handler.writeToReport("Course Title :"+courseName);
             handler.click(AdventusStudentStatus.lnk_Application);
             Adventus.viewApplication(handler, studentID, courseName);
-            appID=handler.getText(AdventusApplication.txt_InstitutionStudentId);
+            appID=handler.getText(AdventusApplication.txt_InstitutionApplicationId).replace("\n","").replace("edit","");
             handler.writeToReport("App ID :"+appID);
         }catch (Exception e){
 
             throw new ExecutionInterruptedException("Unable to retrieve student name form Adventus portal","Failed - Unable to get Adventus Student Name ",e);
         }
 
+        //Switching Accounts
+
+        String username =isPK ? handler.getConfiguration("BRISTOL_PK_USERNAME") : handler.getConfiguration("BRISTOL_IN_USERNAME");
+        String password =isPK ?handler.getConfiguration("BRISTOL_PK_PASSWORD"): handler.getConfiguration("BRISTOL_IN_PASSWORD");
+
+
 
         //step 02
-        UWEBristol.login(handler, handler.getConfiguration("BRISTOL_USERNAME"),handler.getConfiguration("BRISTOL_PASSWORD"));
+        UWEBristol.login(handler,username ,password);
         UniversityOffer offer= new UniversityOffer();
         String offerType=null;
         try{
