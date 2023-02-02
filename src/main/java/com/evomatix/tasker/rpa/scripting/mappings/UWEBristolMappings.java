@@ -6,14 +6,20 @@ public class UWEBristolMappings {
 
     private static final Map<String, String> decisionMapping = Map.of(
             "Conditional", AdventusDocumentTypes.Conditional_Offer,
-            "Unconditional (Academically)", AdventusDocumentTypes.Full_Offer ,
-            "Incomplete", AdventusDocumentTypes.More_Information_Requested
+            "Conditional Firm Accept", AdventusDocumentTypes.Conditional_Offer ,
+            "Conditional Firm Accept Unconditional Firm Accept", AdventusDocumentTypes.Full_Offer ,
+            "Unconditional Firm Accept", AdventusDocumentTypes.Full_Offer,
+            "Further Info Request", AdventusDocumentTypes.More_Information_Requested,
+            "Reject", AdventusDocumentTypes.Application_Outcome
+
     );
 
 
     private static final Map<String, String> orderTrackingMapping = Map.of(
             "Conditional", "Conditional",
-            "Unconditional (Academically)", "Full Offer"
+            "Conditional Firm Accept", "Conditional",
+            "Conditional Firm Accept Unconditional Firm Accept", "Full Offer",
+            "Unconditional Firm Accept", "Full Offer"
     );
 
     public static String Conditional_Offer = "Dear Partner, Please be informed that we have received a conditional offer " +

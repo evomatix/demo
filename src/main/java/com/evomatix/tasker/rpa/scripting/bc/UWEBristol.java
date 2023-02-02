@@ -51,7 +51,7 @@ public class UWEBristol {
 
     }
 
-    public static UniversityOffer processApplication(ExecutionHandler handler, String institutionApplicationID){
+    public static UniversityOffer processApplication(ExecutionHandler handler, String institutionApplicationID,String studentName){
 
         UniversityOffer offer = new UniversityOffer();
 
@@ -64,13 +64,13 @@ public class UWEBristol {
         String pdf=null;
 
         if(decision.equals("reject")){
-            pdf= UWEBristol.downloadTheOffer( handler,"Emails","Reject Email With Feedback");
+            pdf= UWEBristol.downloadTheOffer( handler,"Emails","Reject Email With Feedback",decision,studentName);
 
         }else if(decision.equals("conditional")||decision.equals("conditional firm accept")){
-            pdf =UWEBristol.downloadTheOffer( handler,"Letters","International Conditional Offer");
+            pdf =UWEBristol.downloadTheOffer( handler,"Letters","International Conditional Offer",decision,studentName);
 
         }else if(decision.equals("conditional firm accept unconditional firm accept")||decision.equals("unconditional firm accept")){
-            pdf =UWEBristol.downloadTheOffer( handler,"Letters","International Unconditional Offer");
+            pdf =UWEBristol.downloadTheOffer( handler,"Letters","International Unconditional Offer",decision,studentName);
 
         }else if(decision.equals("Further Info Request") ){
             pdf = "";
@@ -88,7 +88,7 @@ public class UWEBristol {
     }
 
 
-    private static String downloadTheOffer(ExecutionHandler handler,String title, String entry) {
+    private static String downloadTheOffer(ExecutionHandler handler,String title, String entry,String offer,String student) {
 
         String currentWindow = handler.getCurrentWindowTitle();
 
@@ -101,7 +101,8 @@ public class UWEBristol {
 
                 handler.click(UWEBristolApplicantView.lnk_AccordionEntryContent, Map.of("title", title, "entry", entry));
                 handler.switchToNewlyOpenedTab();
-                handler.exportPageAsPDF("/Users/vdhhewapathirana/Storage/Projects/evomatix/out/output.pdf");
+                String fileName=(offer+"_"+student+"_"+entry).replace(" ","_");
+                pdfFilePath =handler.exportPageAsPDF(handler.getConfiguration("DOWNLOAD_PATH"),fileName);
 
 
             } else {

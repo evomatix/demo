@@ -8,6 +8,7 @@ import com.evomatix.tasker.rpa.scripting.bc.UWEBristol;
 import com.evomatix.tasker.rpa.scripting.bc.Utils;
 import com.evomatix.tasker.rpa.scripting.domain.UniversityOffer;
 import com.evomatix.tasker.rpa.scripting.mappings.GreenwichMappings;
+import com.evomatix.tasker.rpa.scripting.mappings.UWEBristolMappings;
 import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusApplication;
 import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusStudentStatus;
 
@@ -51,7 +52,7 @@ public class UWEBristolProcess {
         try{
 
             UWEBristol.searchStudent(handler,appID);
-            offer = UWEBristol.processApplication(handler,appID);
+            offer = UWEBristol.processApplication(handler,appID,studentName);
 
             handler.writeToReport("PDF File :"+offer.getPdfPath());
 
@@ -66,14 +67,14 @@ public class UWEBristolProcess {
         //step 03
         Adventus.login(handler, handler.getConfiguration("ADVENTUS_USERNAME"),handler.getConfiguration("ADVENTUS_PASSWORD"));
         try{
-            offerType = GreenwichMappings.getAdventusDocumentMapping(offer.getDecision());
+            offerType = UWEBristolMappings.getAdventusDocumentMapping(offer.getDecision());
             if(offerType!=null){
                 Adventus.uploadOfferLetter(handler, studentID, studentName,offerType, offer.getUpdatedPDFPath());
             }
 
             Adventus.editApplication(handler, null,courseName,offerType);
 
-            String message = GreenwichMappings.getAdventusMessageMapping(offer.getDecision());
+            String message = UWEBristolMappings.getAdventusMessageMapping(offer.getDecision());
             if(message!=null){
                 message.replace("$University","University of UWE Bristol");
                 message.replace("$Course",courseName);
