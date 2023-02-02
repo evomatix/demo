@@ -11,8 +11,9 @@ public class Plan {
        try(ExecutionHandler handler = new ExecutionHandler()){
            //Call your scripts here
 
-           Processes.coventryOfferCheck(handler);
-           Processes.greenwichOfferCheck(handler);
+          // Processes.coventryOfferCheck(handler);
+          // Processes.greenwichOfferCheck(handler);
+           Processes.UWEBristolOfferCheck(handler);
 
        }catch (Exception e){
            e.printStackTrace();
