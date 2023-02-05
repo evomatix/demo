@@ -13,7 +13,7 @@ import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusStudentStatus;
 
 public class GreenwichProcess {
 
-    public static String GreenwichProcess(ExecutionHandler handler, String studentID, String courseName){
+    public static String GreenwichProcess(ExecutionHandler handler, String studentID, String courseName, String universityName){
 
         handler.reporter.startProcess("Student : "+studentID);
 
@@ -26,11 +26,10 @@ public class GreenwichProcess {
             studentName = Adventus.getStudentName(handler,studentID);
             studentName=studentName.replace(".","").replace("\\.","").replace("-","").replace("_","").trim();
             handler.writeToReport("Student Name : "+studentName);
-
             handler.writeToReport("Course Title :"+courseName);
-            handler.click(AdventusStudentStatus.lnk_Application);
-            Adventus.viewApplication(handler, studentID, courseName);
-            appID=handler.getText(AdventusApplication.txt_InstitutionStudentId);
+            //handler.click(AdventusStudentStatus.lnk_Application);
+            Adventus.viewApplication(handler, studentID, courseName, universityName);
+            appID=handler.getText(AdventusApplication.txt_InstitutionApplicationId).replace("\n","").replace("edit","");
             handler.writeToReport("App ID :"+appID);
         }catch (Exception e){
 
@@ -66,7 +65,7 @@ public class GreenwichProcess {
                 Adventus.uploadOfferLetter(handler, studentID, studentName,offerType, offer.getUpdatedPDFPath());
             }
 
-            Adventus.editApplication(handler, null,courseName,offerType);
+            Adventus.editApplication(handler,studentID, courseName,offerType, universityName);
 
             String message = GreenwichMappings.getAdventusMessageMapping(offer.getDecision());
             if(message!=null){

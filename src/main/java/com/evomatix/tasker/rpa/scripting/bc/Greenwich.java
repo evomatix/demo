@@ -19,7 +19,7 @@ public class Greenwich {
 
 
     public static void login(ExecutionHandler handler, String userName, String password) {
-        handler.open(new CoventryLogin().getUrl(), 3000);
+        handler.open(new GreenwichLogin().getUrl(), 3000);
 
         boolean isHomePage = handler.checkElementPresent(GreenwichLogin.btn_AccountCircle, 5);
         if (!isHomePage) {

@@ -30,7 +30,7 @@ public class UWEBristolProcess {
 
             handler.writeToReport("Course Title :"+courseName);
             handler.click(AdventusStudentStatus.lnk_Application);
-            Adventus.viewApplication(handler, studentID, courseName);
+            Adventus.viewApplication(handler, studentID, courseName, "University of the West of England Bristol");
             appID=handler.getText(AdventusApplication.txt_InstitutionApplicationId).replace("\n","").replace("edit","");
             handler.writeToReport("App ID :"+appID);
         }catch (Exception e){
@@ -72,7 +72,7 @@ public class UWEBristolProcess {
                 Adventus.uploadOfferLetter(handler, studentID, studentName,offerType, offer.getUpdatedPDFPath());
             }
 
-            Adventus.editApplication(handler, null,courseName,offerType);
+            Adventus.editApplication(handler, studentID,courseName,offerType, "University of the West of England Bristol");
 
             String message = UWEBristolMappings.getAdventusMessageMapping(offer.getDecision());
             if(message!=null){

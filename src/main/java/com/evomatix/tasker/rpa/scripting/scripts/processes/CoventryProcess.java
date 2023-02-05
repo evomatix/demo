@@ -59,7 +59,7 @@ public class CoventryProcess {
         try{
             Adventus.uploadOfferLetter(handler, studentID, studentName,offerType, updatedPdfFile);
             Adventus.sendMessage(handler, offerType, courseName);
-            Adventus.editApplication(handler, pdfStudentID,courseName,offerType);
+            Adventus.editApplication(handler, pdfStudentID,courseName,offerType, "Coventry University");
             Adventus.updateTask(handler,studentID,offerType);
         }catch (ExecutionInterruptedException e){
             throw e;

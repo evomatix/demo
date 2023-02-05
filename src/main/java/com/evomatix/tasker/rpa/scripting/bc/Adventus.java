@@ -112,7 +112,7 @@ public class Adventus {
     }
 
 
-    public static void viewApplication(ExecutionHandler handler,String studentID,String courseTitle ){
+    public static void viewApplication(ExecutionHandler handler,String studentID,String courseTitle, String universityName ){
         handler.click(AdventusStudentStatus.lnk_Application);
         //wait till the element is loaded
         boolean appsAvailable=handler.checkElementPresent(AdventusApplication.btn_Edit);
@@ -121,9 +121,9 @@ public class Adventus {
             throw new ExecutionInterruptedException("No Applications are listed for the student ["+studentID+"] in Advantus portal","Failed - Unable to map offer to course");
         }else{
             handler.writeToReport("Checking for a Application with course title ["+courseTitle+"]");
-            boolean isFound= handler.checkElementPresent(AdventusApplication.btn_EditWithCourse,Map.of("title", courseTitle));
+            boolean isFound= handler.checkElementPresent(AdventusApplication.btn_EditWithCourse,Map.of("title", courseTitle,"uniName", universityName));
             if(isFound){
-                handler.click(AdventusApplication.btn_EditWithCourse, Map.of("title", courseTitle));
+                handler.click(AdventusApplication.btn_EditWithCourse,Map.of("title", courseTitle,"uniName", universityName));
             }else{
                 throw new ExecutionInterruptedException("Unable to Find relevant application for course ["+courseTitle+"] among available applications in advantus","Failed - Unable to map offer to course");
             }
@@ -133,10 +133,10 @@ public class Adventus {
 
 
 
-    public static void editApplication(ExecutionHandler handler, String studentID, String courseTitle, String offerType) {
+    public static void editApplication(ExecutionHandler handler, String studentID, String courseTitle, String offerType, String universityName) {
 
 
-        Adventus.viewApplication(handler,studentID,courseTitle);
+        Adventus.viewApplication(handler,studentID,courseTitle,universityName);
 
        if(studentID!=null){
            handler.click(AdventusApplication.btn_EditInstitutionStudentId);
