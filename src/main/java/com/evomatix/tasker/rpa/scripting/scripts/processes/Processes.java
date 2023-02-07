@@ -1,9 +1,7 @@
 package com.evomatix.tasker.rpa.scripting.scripts.processes;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
-import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.rpa.scripting.bc.*;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
