@@ -50,6 +50,7 @@ public class EnrichBank {
         }
 
         if(amount.equalsIgnoreCase(amount_ui)){
+
             //WriteToReport("Amount from API call = ["+amount+"] | Amount from UI = ["+amount_ui+"] - Passed");
         }
         else{
