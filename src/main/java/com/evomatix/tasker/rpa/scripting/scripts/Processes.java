@@ -15,136 +15,22 @@ import java.util.Map;
 
 public class Processes {
 
-	public static void coventryOfferCheck(ExecutionHandler handler) {
+	public static void tc_enrich_bank_transaction_validation(ExecutionHandler handler){
+		EnrichBank.login(handler,"","");
+		EnrichBank.verify_login(handler);
+		EnrichBank.enter_fund_transfer_details(handler,"","");
+		//Call API - get following 4 parameters
+		String name = ""; //API.name();
+		String souorce_account_no = ""; //API.souorce_account_no();
+		String target_account_no = ""; //API.target_account_no();
+		String amount = ""; //API.amount();
 
-		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Data");
-		List<Map<String, Object>> data = excelDataSource.readExcel();
-		int rowNumber =0;
-		int executedRecords = 0;
+		EnrichBank.confirm_fund_transfer_details(handler,name,souorce_account_no,target_account_no,amount);
 
-		for (Map<String, Object> row : data) {
-			rowNumber++;
-			try {
+		String transaction_id = EnrichBank.get_transaction_id(handler);
 
-				//1st check
-				if(Utils.isEligible(handler,row)){
-					executedRecords++;
-					String outcome = CoventryProcess.coventryProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")), String.valueOf(row.get("App ID")).split("\\.")[0]);
-					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
-				}
-
-			} catch (ExecutionInterruptedException e) {
-				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,e.type);
-				handler.log(LogType.FAIL,"FAIL",e.getMessage());
-				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
-			} catch (Exception e){
-				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Failed - Refer Execution Report");
-				handler.log(LogType.FAIL,"FAIL",e.getMessage());
-				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
-			}
-		}
-
-	if(executedRecords>0){
-		try {
-			Adventus.logout(handler);
-			Coventry.coventry_Logout(handler);
-		}catch (Exception e){
-			handler.writeToReport("Final logout is not Successful");
-		}
+		EnrichBank.download_fund_transfer_details_pdf(handler);
+		EnrichBank.logout();
 	}
-
-	}
-
-
-
-
-	public static void greenwichOfferCheck(ExecutionHandler handler) {
-
-		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Data");
-		List<Map<String, Object>> data = excelDataSource.readExcel();
-		int rowNumber =0;
-		int executedRecords = 0;
-
-		for (Map<String, Object> row : data) {
-			rowNumber++;
-			try {
-
-				//1st check
-				if(Utils.isEligible(handler,row)){
-					executedRecords++;
-					String outcome = GreenwichProcess.GreenwichProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")), "University of Greenwich");
-					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
-				}
-
-			} catch (ExecutionInterruptedException e) {
-				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,e.type);
-				handler.log(LogType.FAIL,"FAIL",e.getMessage());
-				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
-			} catch (Exception e){
-				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Failed - Refer Execution Report");
-				handler.log(LogType.FAIL,"FAIL",e.getMessage());
-				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
-			}
-		}
-
-		if(executedRecords>0){
-			try {
-				Adventus.logout(handler);
-				Greenwich.logout(handler);
-			}catch (Exception e){
-				handler.writeToReport("Final logout is not Successful");
-			}
-		}
-
-	}
-
-
-	public static void UWEBristolOfferCheck(ExecutionHandler handler) {
-
-		ExcelManager excelDataSource = handler.fileManager.getExcelManager();
-		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"),"Combined Test Data - 27th Jan");
-		List<Map<String, Object>> data = excelDataSource.readExcel();
-		int rowNumber =0;
-		int executedRecords = 0;
-
-		for (Map<String, Object> row : data) {
-			rowNumber++;
-			try {
-
-				//1st check
-				if(Utils.isEligible(handler,row)){
-					executedRecords++;
-					boolean isPK = String.valueOf(row.get("Region")).trim().toLowerCase().equals("pakistan")?true:false;
-					String outcome = UWEBristolProcess.UWEBristolProcess(handler, String.valueOf(row.get("Student ID")).split("\\.")[0], String.valueOf(row.get("Course Name")),isPK);
-					ExcelOps.updateExcelOutcome(handler,excelDataSource,rowNumber,outcome);
-				}
-
-			} catch (ExecutionInterruptedException e) {
-				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,e.type);
-				handler.log(LogType.FAIL,"FAIL",e.getMessage());
-				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
-			} catch (Exception e){
-				ExcelOps.updateExcelError(handler,excelDataSource,rowNumber,"Failed - Refer Execution Report");
-				handler.log(LogType.FAIL,"FAIL",e.getMessage());
-				handler.log(LogType.FAIL,"TECH TRACE",ExceptionUtils.getStackTrace(e));
-			}
-		}
-
-		if(executedRecords>0){
-			try {
-				Adventus.logout(handler);
-				Greenwich.logout(handler);
-			}catch (Exception e){
-				handler.writeToReport("Final logout is not Successful");
-			}
-		}
-
-	}
-
-
-
-
 
 }

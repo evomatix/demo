@@ -2,12 +2,8 @@ package com.evomatix.tasker.rpa.scripting.scripts.processes;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
-import com.evomatix.tasker.rpa.scripting.bc.Adventus;
-import com.evomatix.tasker.rpa.scripting.bc.Greenwich;
-import com.evomatix.tasker.rpa.scripting.bc.UWEBristol;
 import com.evomatix.tasker.rpa.scripting.bc.Utils;
 import com.evomatix.tasker.rpa.scripting.domain.UniversityOffer;
-import com.evomatix.tasker.rpa.scripting.mappings.GreenwichMappings;
 import com.evomatix.tasker.rpa.scripting.mappings.UWEBristolMappings;
 import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusApplication;
 import com.evomatix.tasker.rpa.scripting.pages.advantus.AdventusStudentStatus;

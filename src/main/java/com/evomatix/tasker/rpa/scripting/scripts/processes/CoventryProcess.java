@@ -2,8 +2,6 @@ package com.evomatix.tasker.rpa.scripting.scripts.processes;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
 import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
-import com.evomatix.tasker.rpa.scripting.bc.Adventus;
-import com.evomatix.tasker.rpa.scripting.bc.Coventry;
 import com.evomatix.tasker.rpa.scripting.bc.Utils;
 
 public class CoventryProcess {

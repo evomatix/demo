@@ -10,9 +10,8 @@ public class Plan {
 
        try(ExecutionHandler handler = new ExecutionHandler()){
            //Call your scripts here
-           Processes.coventryOfferCheck(handler);
-           Processes.greenwichOfferCheck(handler);
-           Processes.UWEBristolOfferCheck(handler);
+           Processes.tc_enrich_bank_transaction_validation(handler);
+
 
        }catch (Exception e){
            e.printStackTrace();
