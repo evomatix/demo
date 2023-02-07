@@ -1,15 +1,11 @@
 package com.evomatix.tasker.rpa.scripting.scripts.processes;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
-import com.evomatix.tasker.framework.exceptions.ExecutionInterruptedException;
 import com.evomatix.tasker.framework.fileops.ExcelManager;
 import com.evomatix.tasker.rpa.scripting.bc.*;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.evomatix.tasker.rpa.scripting.pages.EnrichBank.EnrichBank_FundTransferDetails;
 
 
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,26 +28,19 @@ public class Processes {
 				EnrichBank.enter_fund_transfer_details(handler, String.valueOf(testdata.get("target_account_no")), String.valueOf(testdata.get("amount")));
 				EnrichBank.confirm_fund_transfer_details(handler);
 
+				//extracting data from UI
 
-				String transaction_id = EnrichBank.get_transaction_id(handler);
+				String transactionId = EnrichBank.get_transaction_id(handler);
 
-				//Call API - get 4 parameters
-				String url = "http://localhost:8080/funds/transfer/" + transaction_id;
-				HttpResponse<String> response = handler.callWebRequest(url, "get", new ArrayList<>());
-				Map<String, Object> result;
+				HashMap<String,String> uiAttributes = new HashMap<>();
+				uiAttributes.put("name",handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_Name,"value"));
+				uiAttributes.put( "sourceAccount",handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_SourceAccountNo, "value"));
+				uiAttributes.put("targetAccount", handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_TargetAccountNo, "value"));
+				uiAttributes.put("amount", handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_Amount,"value"));
 
-				try {
-					result = new ObjectMapper().readValue(response.body(), HashMap.class);
-				} catch (Exception e) {
-					throw new RuntimeException("Error occurred while reading http response", e);
-				}
-
-				String name = (String) result.get("name");
-				String sourceAccount = (String) result.get("sourceAccount");
-				String target_account_no = (String) result.get("targetAccount");
-				String amount = (String) result.get("amount");
-
-				EnrichBank.download_fund_transfer_details_pdf(handler, name, sourceAccount, target_account_no, amount);
+				EnrichBank.validate_API(handler,transactionId,uiAttributes);
+				EnrichBank.validate_MessageQueue(handler,transactionId,uiAttributes);
+				EnrichBank.validate_PDF(handler,uiAttributes);
 
 			} catch (RuntimeException e) {
 				throw new RuntimeException("Error occurred while executing the test script", e);

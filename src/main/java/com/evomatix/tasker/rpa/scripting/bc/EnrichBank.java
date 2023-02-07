@@ -1,8 +1,16 @@
 package com.evomatix.tasker.rpa.scripting.bc;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
+import com.evomatix.tasker.framework.fileops.SimplePDFReader;
+import com.evomatix.tasker.framework.mq.RabbitMQManager;
 import com.evomatix.tasker.rpa.scripting.pages.EnrichBank.EnrichBank_FundTransferDetails;
 import com.evomatix.tasker.rpa.scripting.pages.EnrichBank.EnrichBank_Login;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EnrichBank {
 
@@ -30,48 +38,87 @@ public class EnrichBank {
         String transaction_id = handler.getText(EnrichBank_FundTransferDetails.txt_TransactionID);
         return transaction_id;
     }
-    public static void download_fund_transfer_details_pdf(ExecutionHandler handler, String name, String source_account_no,String target_account_no, String amount) {
-        String name_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_Name,"value");
-        String source_account_no_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_SourceAccountNo, "value");
-        String target_account_no_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_TargetAccountNo, "value");
-        String amount_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_Amount,"value");
 
-        if(name.equalsIgnoreCase(name_ui)){
-            handler.writeToReport("Name from API call = ["+name+"] | Name from UI = ["+name_ui+"] - Passed");
-        }
-        else{
-            handler.fail("Name from API call = ["+name+"] | Name from UI = ["+name_ui+"] - Failed");
-        }
+    public static void validate_API(ExecutionHandler handler, String transactionId, HashMap<String,String> source ){
+        String url = "http://localhost:8080/funds/transfer/" + transactionId;
+        HttpResponse<String> response = handler.callWebRequest(url, "get", new ArrayList<>());
+        Map<String, Object> result;
 
-        if(source_account_no.equalsIgnoreCase(source_account_no_ui)){
-            handler.writeToReport("Source Account No. from API call = ["+source_account_no+"] | Source Account No. from UI = ["+source_account_no_ui+"] - Passed");
-        }
-        else{
-            handler.fail("Source Account No. from API call = ["+source_account_no+"] | Source Account No. from UI = ["+source_account_no_ui+"] - Failed");
+        try {
+            result = new ObjectMapper().readValue(response.body(), HashMap.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while reading http response", e);
         }
 
-        if(target_account_no.equalsIgnoreCase(target_account_no_ui)){
-            handler.writeToReport("Target Account No. from API call = ["+target_account_no+"] | Target Account No. from UI = ["+target_account_no_ui+"] - Passed");
-        }
-        else{
-            handler.fail("Target Account No. from API call = ["+target_account_no+"] | Target Account No. from UI = ["+target_account_no_ui+"] - Failed");
-        }
+        HashMap<String,String> apiData = new HashMap<>();
 
-        if(amount.equalsIgnoreCase(amount_ui)){
-
-            handler.writeToReport("Amount from API call = ["+amount+"] | Amount from UI = ["+amount_ui+"] - Passed");
-        }
-        else{
-            handler.fail("Amount from API call = ["+amount+"] | Amount from UI = ["+amount_ui+"] - Failed");
-        }
-        handler.click(EnrichBank_FundTransferDetails.btn_DownloadReceipt);
+        apiData.put("name",(String) result.get("name"));
+        apiData.put("sourceAccount",(String) result.get("sourceAccount"));
+        apiData.put("targetAccount",(String) result.get("targetAccount"));
+        apiData.put("amount",(String) result.get("amount"));
+        EnrichBank.validateTransactionAttributes(handler, "web api call",source,apiData);
     }
+
+
+    public static void validate_MessageQueue(ExecutionHandler handler, String transactionId, HashMap<String,String> source ){
+        RabbitMQManager manager = handler.messageQueueManager.getRabbitMQManager();
+        manager.createConnection("localhost", "enrichbank");
+        String msg= manager.fetchMessages();
+        Map<String, Object> result;
+
+        try {
+            result = new ObjectMapper().readValue(msg, HashMap.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while reading http response", e);
+        }
+
+        HashMap<String,String> apiData = new HashMap<>();
+
+        apiData.put("name",(String) result.get("name"));
+        apiData.put("sourceAccount",(String) result.get("sourceAccount"));
+        apiData.put("targetAccount",(String) result.get("targetAccount"));
+        apiData.put("amount",(String) result.get("amount"));
+        EnrichBank.validateTransactionAttributes(handler, "message queue",source,apiData);
+    }
+
+
+    public static void validate_PDF(ExecutionHandler handler,HashMap<String,String> source){
+
+        String pdfFile = EnrichBank.download_fund_transfer_details_pdf(handler);
+        SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
+        String pdfData =reader.readPDF(pdfFile);
+
+        for (String attribute:source.keySet()) {
+            if(pdfData.equalsIgnoreCase(source.get(attribute)))
+                handler.writeToReport(attribute+" from UI = ["+source.get(attribute)+"] - is found in PDF - Passed");
+            else
+                handler.fail(attribute+" from UI = ["+source.get(attribute)+"] is found not in PDF - Failed");
+        }
+
+    }
+
+
+    public static String download_fund_transfer_details_pdf(ExecutionHandler handler) {
+        handler.click(EnrichBank_FundTransferDetails.btn_DownloadReceipt);
+        return handler.waitUntilDonwloadCompleted();
+    }
+
+
+    public static void validateTransactionAttributes(ExecutionHandler handler, String channel, HashMap<String,String> source,HashMap<String,String> target){
+
+        for (String attribute:source.keySet()) {
+            if(source.get(attribute).equalsIgnoreCase(target.get(attribute)))
+                handler.writeToReport(attribute+" from "+channel+" = ["+target.get(attribute)+"] | "+attribute+" from UI = ["+source.get(attribute)+"] - Passed");
+            else
+                handler.fail(attribute+" from "+channel+" = ["+target.get(attribute)+"] | "+attribute+" from UI = ["+source.get(attribute)+"] - Failed");
+        }
+    }
+
+
 
     public static void logout(){
 
     }
-
-
 
 
 
