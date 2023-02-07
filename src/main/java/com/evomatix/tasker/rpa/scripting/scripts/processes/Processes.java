@@ -38,6 +38,7 @@ public class Processes {
 				uiAttributes.put("targetAccount", handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_TargetAccountNo, "value"));
 				uiAttributes.put("amount", handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_Amount,"value"));
 
+				//validations
 				EnrichBank.validate_API(handler,transactionId,uiAttributes);
 				EnrichBank.validate_MessageQueue(handler,transactionId,uiAttributes);
 				EnrichBank.validate_PDF(handler,uiAttributes);
