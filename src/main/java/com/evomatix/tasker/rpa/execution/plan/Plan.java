@@ -1,7 +1,7 @@
 package com.evomatix.tasker.rpa.execution.plan;
 
 import com.evomatix.tasker.framework.engine.ExecutionHandler;
-import com.evomatix.tasker.rpa.scripting.scripts.Processes;
+import com.evomatix.tasker.rpa.scripting.scripts.processes.Processes;
 
 public class Plan {
 
