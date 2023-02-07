@@ -23,10 +23,10 @@ public class EnrichBank {
     }
 
     public static void confirm_fund_transfer_details(ExecutionHandler handler, String name, String source_account_no,String target_account_no, String amount) {
-        String name_ui = handler.getText(EnrichBank_FundTransferDetails.txt_Name);
-        String source_account_no_ui = handler.getText(EnrichBank_FundTransferDetails.txt_SourceAccountNo);
-        String target_account_no_ui = handler.getText(EnrichBank_FundTransferDetails.txt_TargetAccountNo);
-        String amount_ui = handler.getText(EnrichBank_FundTransferDetails.txt_Amount);
+        String name_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_Name,"value");
+        String source_account_no_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_SourceAccountNo, "value");
+        String target_account_no_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_TargetAccountNo, "value");
+        String amount_ui = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_Amount,"value");
 
         if(name.equalsIgnoreCase(name_ui)){
             //WriteToReport("Name from API call = ["+name+"] | Name from UI = ["+name_ui+"] - Passed");

@@ -21,7 +21,7 @@ public class Processes {
 
 		String transaction_id = EnrichBank.get_transaction_id(handler);
 
-		//Call API - get following 4 parameters
+		//Call API - get 4 parameters
 		String url ="http://localhost:8080/funds/transfer/"+transaction_id;
 		HttpResponse<String> response = handler.callWebRequest(url, "get", new ArrayList<>());
 		Map<String,Object> result;
