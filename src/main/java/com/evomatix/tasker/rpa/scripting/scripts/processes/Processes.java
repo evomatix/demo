@@ -18,10 +18,10 @@ public class Processes {
 		excelDataSource.openWorkBook(handler.getConfiguration("EXCEL_FILE"), "Test Data");
 		List<Map<String, Object>> data = excelDataSource.readExcel();
 		int rowNumber = 0;
-		int executedRecords = 0;
 
 		for (Map<String, Object> testdata : data) {
 			rowNumber++;
+			handler.reporter.startProcess("Transaction Validation "+rowNumber);
 			try {
 				EnrichBank.login(handler, String.valueOf(testdata.get("user_name")), String.valueOf(testdata.get("password")));
 				EnrichBank.verify_login(handler);

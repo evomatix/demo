@@ -35,7 +35,7 @@ public class EnrichBank {
     }
 
     public static String get_transaction_id(ExecutionHandler handler) {
-        String transaction_id = handler.getText(EnrichBank_FundTransferDetails.txt_TransactionID);
+        String transaction_id = handler.getElementAttribute(EnrichBank_FundTransferDetails.txt_TransactionID,"value");
         return transaction_id;
     }
 
@@ -87,12 +87,13 @@ public class EnrichBank {
         String pdfFile = EnrichBank.download_fund_transfer_details_pdf(handler);
         SimplePDFReader reader = handler.fileManager.getPDFManager().getSimplePDFReader();
         String pdfData =reader.readPDF(pdfFile);
+        System.out.println(pdfData);
 
         for (String attribute:source.keySet()) {
-            if(pdfData.equalsIgnoreCase(source.get(attribute)))
+            if(pdfData.toLowerCase().contains(source.get(attribute).toLowerCase()))
                 handler.writeToReport(attribute+" from UI = ["+source.get(attribute)+"] - is found in PDF - Passed");
             else
-                handler.fail(attribute+" from UI = ["+source.get(attribute)+"] is found not in PDF - Failed");
+                handler.fail(attribute+" from UI = ["+source.get(attribute)+"] is not found  in PDF - Failed");
         }
 
     }
